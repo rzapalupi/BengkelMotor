@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "489648580662",
+    "firebase_url": "https://bengkelmotor-9385f.firebaseio.com",
+    "project_id": "bengkelmotor-9385f",
+    "storage_bucket": "bengkelmotor-9385f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489648580662:android:bdda0f43b5df75c6",
+        "android_client_info": {
+          "package_name": "com.efpro.bengkelmotor_01"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489648580662-iv7sc9edfghdkr5qstugv9gm1t3g83qj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.efpro.bengkelmotor_01",
+            "certificate_hash": "b70cf88025c7e2e4a8c1cf454e8904a0a4f92116"
+          }
+        },
+        {
+          "client_id": "489648580662-9i225gp620g647fhd404bfdf7bglmn56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh__yKLZCWwziKUACg5G4Vpttge9-_9c8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489648580662-9i225gp620g647fhd404bfdf7bglmn56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
