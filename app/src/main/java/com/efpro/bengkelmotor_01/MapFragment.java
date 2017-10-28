@@ -19,6 +19,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +33,7 @@ public class MapFragment extends Fragment
     private GoogleMap mGoogleMap;
     private MapView mMapView;
     private View mView;
+    private ArrayList<Bengkel> tmpBengkel;
 
     public MapFragment() {
         // Required empty public constructor
@@ -41,6 +44,8 @@ public class MapFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
+        // get data bengkel from MainActivity, and save to tmpBengkel
+        tmpBengkel = ((MainActivity)getActivity()).getBengkelList();
         return mView;
     }
 
@@ -59,16 +64,15 @@ public class MapFragment extends Fragment
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
-        // Add a marker in Sydney and move the camera
+
+        //Add marker for each bengkel
+        for (Bengkel bengkel: tmpBengkel){
+            LatLng bLocation = new LatLng(bengkel.getbLatitude(), bengkel.getbLongitude());
+            mGoogleMap.addMarker(new MarkerOptions().position(bLocation).title(bengkel.getbNama()));
+        }
+
+        //Add marker for your location and move camera
         LatLng myLocation = new LatLng(((MainActivity) getActivity()).getLatitude(), (((MainActivity) getActivity()).getLongitude()));
-
-//        LatLng bengkel1 = new LatLng(-7.6, 110);
-//        LatLng bengkel2 = new LatLng(-7.52, 95);
-//        LatLng bengkel3 = new LatLng(-7.4, 104);
-//        mGoogleMap.addMarker(new MarkerOptions().position(bengkel1).title("bengkel_1"));
-//        mGoogleMap.addMarker(new MarkerOptions().position(bengkel2).title("bengkel_2"));
-//        mGoogleMap.addMarker(new MarkerOptions().position(bengkel3).title("bengkel_3"));
-
         mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location"));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -84,12 +88,12 @@ public class MapFragment extends Fragment
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.setOnMyLocationButtonClickListener(this);
         //mGoogleMap.setOnMyLocationClickListener(this);
-
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
         Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
         return false;
     }
 }

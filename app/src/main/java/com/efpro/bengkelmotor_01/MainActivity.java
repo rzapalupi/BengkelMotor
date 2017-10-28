@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements
      * {@link #onRequestPermissionsResult(int, String[], int[])}.
      */
     private boolean mPermissionDenied = false;
+    private Double radius = 0.005;
 
     private DatabaseReference mBengkelRef;
     private ArrayList<Bengkel> bengkels = new ArrayList<Bengkel>();
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
+        //Set firebase database
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -253,6 +255,17 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                /**--- with radius, for show bengkel location which in radius---**/
+//                for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
+//                    Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
+//                    if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
+//                            bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
+//                        Log.e("Nama", bengkel.getbNama());
+//                        Log.e("Alamat", bengkel.getbAlamat());
+//                        bengkels.add(bengkel);
+//                    }
+//                }
+
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
                     Log.e("Nama", bengkel.getbNama());
@@ -268,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements
         };
         mBengkelRef.addValueEventListener(valueEventListener);
     }
+
     public ArrayList<Bengkel> getBengkelList() {
         return bengkels;
     }
