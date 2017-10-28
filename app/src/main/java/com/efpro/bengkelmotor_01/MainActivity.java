@@ -80,9 +80,9 @@ public class MainActivity extends AppCompatActivity implements
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         // getting network status
         isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        getLocation();
+
         enableMyLocation();
-        getDatabase();
+
     }
 
     @Override
@@ -198,9 +198,8 @@ public class MainActivity extends AppCompatActivity implements
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         } else  {
             // Access to the location has been granted to the app.
-            MapFragment mapFragment = new MapFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.mainLayout, mapFragment).commit();
+            getLocation();
+            getDatabase();
         }
     }
 
@@ -243,11 +242,12 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         if(someFlag) {
-            getLocation();
             enableMyLocation();
-            //someFlag = false;
         }
+    }
 
+    public ArrayList<Bengkel> getBengkelList() {
+        return bengkels;
     }
 
     public void getDatabase(){
@@ -256,22 +256,23 @@ public class MainActivity extends AppCompatActivity implements
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 /**--- with radius, for show bengkel location which in radius---**/
-//                for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
-//                    Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
-//                    if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
-//                            bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
-//                        Log.e("Nama", bengkel.getbNama());
-//                        Log.e("Alamat", bengkel.getbAlamat());
-//                        bengkels.add(bengkel);
-//                    }
-//                }
-
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
-                    Log.e("Nama", bengkel.getbNama());
-                    Log.e("Alamat", bengkel.getbAlamat());
-                    bengkels.add(bengkel);
+                    if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
+                            bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
+                        Log.e("Nama", bengkel.getbNama());
+                        Log.e("Alamat", bengkel.getbAlamat());
+                        double haversine = new Haversine().Formula(latitude,longitude,bengkel.getbLatitude(),bengkel.getbLongitude());
+                        bengkel.setbJarak(haversine);
+                        bengkels.add(bengkel);
+                    }
                 }
+//                for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
+//                    Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
+//                    Log.e("Nama", bengkel.getbNama());
+//                    Log.e("Alamat", bengkel.getbAlamat());
+//                    bengkels.add(bengkel);
+//                }
             }
 
             @Override
@@ -280,10 +281,13 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
         mBengkelRef.addValueEventListener(valueEventListener);
+
+        MapFragment mapFragment = new MapFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.mainLayout, mapFragment).commit();
     }
 
-    public ArrayList<Bengkel> getBengkelList() {
-        return bengkels;
-    }
+
+
 
 }

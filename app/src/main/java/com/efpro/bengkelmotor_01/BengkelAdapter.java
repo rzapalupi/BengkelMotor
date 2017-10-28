@@ -40,6 +40,8 @@ public class BengkelAdapter extends ArrayAdapter<Bengkel> {
         Bengkel bengkel = getItem(position);
         txtNama.setText(bengkel.getbNama());
         txtAlamat.setText(bengkel.getbAlamat());
+//        double x = bengkel.getbJarak();
+        txtJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
 
         return convertView;
     }

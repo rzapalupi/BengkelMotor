@@ -9,13 +9,23 @@ public class Bengkel {
     private String bNama;
     private String bAlamat;
     private String bTelepon;
-    private Double bLatitude;
-    private Double bLongitude;
+    private double bLatitude;
+    private double bLongitude;
+
+    public double getbJarak() {
+        return bJarak;
+    }
+
+    public void setbJarak(double bJarak) {
+        this.bJarak = bJarak;
+    }
+
+    private double bJarak;
 
     public Bengkel() {
     }
 
-    public Bengkel(String bNama, String bAlamat, String bTelepon, Double bLatitude, Double bLongitude) {
+    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude) {
         this.bNama = bNama;
         this.bAlamat = bAlamat;
         this.bTelepon = bTelepon;
@@ -36,11 +46,11 @@ public class Bengkel {
         return bTelepon;
     }
 
-    public Double getbLatitude() {
+    public double getbLatitude() {
         return bLatitude;
     }
 
-    public Double getbLongitude() {
+    public double getbLongitude() {
         return bLongitude;
     }
 
