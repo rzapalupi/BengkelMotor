@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements
     private Double radius = 0.005;
 
     private DatabaseReference mBengkelRef;
-    private ArrayList<Bengkel> bengkels = new ArrayList<Bengkel>();
+    private ArrayList<Bengkel> bengkels = new ArrayList<>();
 
     FloatingActionButton fab;
     Double latitude, longitude;
@@ -178,11 +178,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onProviderDisabled(String provider) {
     }
 
-    public Double getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public Double getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
@@ -282,9 +282,13 @@ public class MainActivity extends AppCompatActivity implements
         };
         mBengkelRef.addValueEventListener(valueEventListener);
 
-        MapFragment mapFragment = new MapFragment();
+//        MapFragment mapFragment = new MapFragment();
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.replace(R.id.mainLayout, mapFragment).commit();
+
+        SplashFragment splashFragment = new SplashFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.mainLayout, mapFragment).commit();
+        ft.replace(R.id.mainLayout, splashFragment).commit();
     }
 
 

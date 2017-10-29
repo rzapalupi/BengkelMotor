@@ -16,6 +16,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/gb1"/>
+        android:src="@drawable/gb1"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

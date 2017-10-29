@@ -4,8 +4,10 @@ package com.efpro.bengkelmotor_01;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +35,7 @@ public class MapFragment extends Fragment
     private GoogleMap mGoogleMap;
     private MapView mMapView;
     private View mView;
-    private ArrayList<Bengkel> tmpBengkel;
+    ArrayList<Bengkel> tmpBengkel;
 
     public MapFragment() {
         // Required empty public constructor
@@ -42,10 +44,11 @@ public class MapFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
-        // get data bengkel from MainActivity, and save to tmpBengkel
-        tmpBengkel = ((MainActivity)getActivity()).getBengkelList();
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
         return mView;
     }
 
@@ -64,17 +67,25 @@ public class MapFragment extends Fragment
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
-
-        //Add marker for each bengkel
-        for (Bengkel bengkel: tmpBengkel){
-            LatLng bLocation = new LatLng(bengkel.getbLatitude(), bengkel.getbLongitude());
-            mGoogleMap.addMarker(new MarkerOptions().position(bLocation).title(bengkel.getbNama()));
+        tmpBengkel = ((MainActivity)getActivity()).getBengkelList();
+        if (tmpBengkel == null){
+            Log.d("Bengkel","bengkel kosong");
+        } else{
+            Log.d("Bengkel","bengkel ada isinya");
+            //Add marker for each bengkel
+            for (Bengkel bengkel:tmpBengkel) {
+                LatLng bLocation = new LatLng(bengkel.getbLatitude(), bengkel.getbLongitude());
+                mGoogleMap.addMarker(new MarkerOptions().position(bLocation).title(bengkel.getbNama()));
+                Log.e("Nama", bengkel.getbNama());
+            }
         }
-
         //Add marker for your location and move camera
         LatLng myLocation = new LatLng(((MainActivity) getActivity()).getLatitude(), (((MainActivity) getActivity()).getLongitude()));
         mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location"));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+
+
+
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
