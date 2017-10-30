@@ -1,7 +1,8 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.efpro.bengkelmotor_01.MapFragment">
 
     <!--&lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
@@ -11,4 +12,22 @@
         android:layout_width="match_parent"
         android:id="@+id/mapLayout"/>
 
-</FrameLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/gb1"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_myLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fab_map"
+        android:layout_alignStart="@+id/fab_map"
+        android:src="@mipmap/ic_my_location"
+        />
+
+</RelativeLayout>

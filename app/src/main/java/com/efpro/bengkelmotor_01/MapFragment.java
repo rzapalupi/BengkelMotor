@@ -7,11 +7,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,12 +30,12 @@ import java.util.ArrayList;
  */
 public class MapFragment extends Fragment
         implements OnMapReadyCallback,
-        GoogleMap.OnMyLocationButtonClickListener,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+        ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener {
 
     private GoogleMap mGoogleMap;
     private MapView mMapView;
     private View mView;
+    FloatingActionButton fab_map, fab_myLocation;
     ArrayList<Bengkel> tmpBengkel;
 
     public MapFragment() {
@@ -47,8 +48,14 @@ public class MapFragment extends Fragment
 
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
+        fab_map = (FloatingActionButton) mView.findViewById(R.id.fab_map);
+        fab_myLocation = (FloatingActionButton) mView.findViewById(R.id.fab_myLocation);
+        fab_myLocation.setPadding(0,0,0,0);
+        fab_map.setOnClickListener(this);
+        fab_myLocation.setOnClickListener(this);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+
         return mView;
     }
 
@@ -68,23 +75,18 @@ public class MapFragment extends Fragment
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
         tmpBengkel = ((MainActivity)getActivity()).getBengkelList();
-        if (tmpBengkel == null){
-            Log.d("Bengkel","bengkel kosong");
-        } else{
-            Log.d("Bengkel","bengkel ada isinya");
-            //Add marker for each bengkel
-            for (Bengkel bengkel:tmpBengkel) {
-                LatLng bLocation = new LatLng(bengkel.getbLatitude(), bengkel.getbLongitude());
-                mGoogleMap.addMarker(new MarkerOptions().position(bLocation).title(bengkel.getbNama()));
-                Log.e("Nama", bengkel.getbNama());
-            }
+
+        //Add marker for each bengkel
+        for (Bengkel bengkel:tmpBengkel) {
+            LatLng bLocation = new LatLng(bengkel.getbLatitude(), bengkel.getbLongitude());
+            mGoogleMap.addMarker(new MarkerOptions().position(bLocation).title(bengkel.getbNama()));
+            Log.e("Nama", bengkel.getbNama());
         }
+
         //Add marker for your location and move camera
         LatLng myLocation = new LatLng(((MainActivity) getActivity()).getLatitude(), (((MainActivity) getActivity()).getLongitude()));
-        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location"));
+        //mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location"));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
-
-
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -97,14 +99,21 @@ public class MapFragment extends Fragment
             return;
         }
         mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.setOnMyLocationButtonClickListener(this);
-        //mGoogleMap.setOnMyLocationClickListener(this);
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
     }
 
     @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
-        return false;
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab_map:
+                BengkelFragment bengkelFragment = new BengkelFragment();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.mainLayout, bengkelFragment).commit();
+            break;
+            case R.id.fab_myLocation:
+                LatLng myLocation = new LatLng(((MainActivity) getActivity()).getLatitude(), (((MainActivity) getActivity()).getLongitude()));
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+        }
     }
 }

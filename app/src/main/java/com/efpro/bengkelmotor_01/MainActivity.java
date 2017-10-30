@@ -8,7 +8,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -42,12 +43,12 @@ public class MainActivity extends AppCompatActivity implements
      * {@link #onRequestPermissionsResult(int, String[], int[])}.
      */
     private boolean mPermissionDenied = false;
-    private Double radius = 0.005;
+    private Double radius = 0.1;
 
     private DatabaseReference mBengkelRef;
     private ArrayList<Bengkel> bengkels = new ArrayList<>();
 
-    FloatingActionButton fab;
+    //FloatingActionButton fab;
     Double latitude, longitude;
     Location location;
     LocationManager locationManager;
@@ -69,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(this);
+//        fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(this);
 
         //Set firebase database
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
@@ -87,23 +88,23 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fab:
-                if (fragFlag) {
-                    MapFragment mapFragment = new MapFragment();
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.mainLayout, mapFragment).commit();
-                    fab.setImageResource(R.drawable.gb1);
-                    fragFlag = false;
-                } else {
-                    BengkelFragment bengkelFragment = new BengkelFragment();
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.mainLayout, bengkelFragment).commit();
-                    fab.setImageResource(R.drawable.gb2);
-                    fragFlag = true;
-                }
-            break;
-        }
+//        switch (v.getId()) {
+//            case R.id.fab:
+//                if (fragFlag) {
+//                    MapFragment mapFragment = new MapFragment();
+//                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                    ft.replace(R.id.mainLayout, mapFragment).commit();
+//                    fab.setImageResource(R.drawable.gb1);
+//                    fragFlag = false;
+//                } else {
+//                    BengkelFragment bengkelFragment = new BengkelFragment();
+//                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                    ft.replace(R.id.mainLayout, bengkelFragment).commit();
+//                    fab.setImageResource(R.drawable.gb2);
+//                    fragFlag = true;
+//                }
+//            break;
+//        }
     }
 
     public void getLocation() {
@@ -267,6 +268,14 @@ public class MainActivity extends AppCompatActivity implements
                         bengkels.add(bengkel);
                     }
                 }
+                //Sorting jarak terdekat
+                Collections.sort(bengkels, new Comparator<Bengkel>() {
+                    @Override
+                    public int compare(Bengkel o1, Bengkel o2) {
+                        return Double.compare(o1.getbJarak(), o2.getbJarak());
+                    }
+                });
+
 //                for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
 //                    Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
 //                    Log.e("Nama", bengkel.getbNama());
@@ -281,10 +290,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
         mBengkelRef.addValueEventListener(valueEventListener);
-
-//        MapFragment mapFragment = new MapFragment();
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.mainLayout, mapFragment).commit();
 
         SplashFragment splashFragment = new SplashFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
