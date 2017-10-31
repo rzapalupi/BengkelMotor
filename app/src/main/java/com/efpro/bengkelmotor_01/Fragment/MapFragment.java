@@ -1,4 +1,4 @@
-package com.efpro.bengkelmotor_01;
+package com.efpro.bengkelmotor_01.Fragment;
 
 
 import android.Manifest;
@@ -13,13 +13,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.Activity.MainActivity;
+import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -30,13 +35,15 @@ import java.util.ArrayList;
  */
 public class MapFragment extends Fragment
         implements OnMapReadyCallback,
-        ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener {
+        ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener {
 
-    private GoogleMap mGoogleMap;
-    private MapView mMapView;
-    private View mView;
-    FloatingActionButton fab_map, fab_myLocation;
-    ArrayList<Bengkel> tmpBengkel;
+    private GoogleMap       mGoogleMap;
+    private MapView         mMapView;
+    private View            mView;
+    FloatingActionButton    fab_map, fab_myLocation;
+    ArrayList<Bengkel>      tmpBengkel;
+    TextView                txtTNama, txtTAlamat, txtTJarak,
+                            txtBNama, txtBAlamat, txtBJarak;
 
     public MapFragment() {
         // Required empty public constructor
@@ -47,12 +54,26 @@ public class MapFragment extends Fragment
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_map, container, false);
-        fab_map = (FloatingActionButton) mView.findViewById(R.id.fab_map);
-        fab_myLocation = (FloatingActionButton) mView.findViewById(R.id.fab_myLocation);
-        fab_myLocation.setPadding(0,0,0,0);
+        mView           = inflater.inflate(R.layout.fragment_map, container, false);
+        fab_map         = (FloatingActionButton) mView.findViewById(R.id.fab_map);
+        txtTNama       = (TextView) mView.findViewById(R.id.txtTNama);
+        txtTAlamat     = (TextView) mView.findViewById(R.id.txtTAlamat);
+        txtTJarak      = (TextView) mView.findViewById(R.id.txtTJarak);
+        txtBNama       = (TextView) mView.findViewById(R.id.txtBNama);
+        txtBAlamat     = (TextView) mView.findViewById(R.id.txtBAlamat);
+        txtBJarak      = (TextView) mView.findViewById(R.id.txtBJarak);
+        fab_myLocation  = (FloatingActionButton) mView.findViewById(R.id.fab_myLocation);
+        tmpBengkel      = ((MainActivity)getActivity()).getBengkelList();
+
         fab_map.setOnClickListener(this);
         fab_myLocation.setOnClickListener(this);
+
+
+        //Cardview menampilkan bengkel terdekat
+        Bengkel bengkel = tmpBengkel.get(0);
+        txtTNama.setText(bengkel.getbNama());
+        txtTAlamat.setText(bengkel.getbAlamat());
+        txtTJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
 
@@ -74,7 +95,7 @@ public class MapFragment extends Fragment
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
-        tmpBengkel = ((MainActivity)getActivity()).getBengkelList();
+        mGoogleMap.setOnMarkerClickListener(this);
 
         //Add marker for each bengkel
         for (Bengkel bengkel:tmpBengkel) {
@@ -85,7 +106,6 @@ public class MapFragment extends Fragment
 
         //Add marker for your location and move camera
         LatLng myLocation = new LatLng(((MainActivity) getActivity()).getLatitude(), (((MainActivity) getActivity()).getLongitude()));
-        //mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location"));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -116,4 +136,19 @@ public class MapFragment extends Fragment
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
         }
     }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        for(Bengkel bengkel: tmpBengkel){
+            if(marker.getTitle().equals(bengkel.getbNama())){
+                txtBNama.setText(bengkel.getbNama());
+                txtBAlamat.setText(bengkel.getbAlamat());
+                txtBJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
+            }
+        }
+        return false;
+    }
+
+
+
 }

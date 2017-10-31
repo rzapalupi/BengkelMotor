@@ -1,4 +1,4 @@
-package com.efpro.bengkelmotor_01;
+package com.efpro.bengkelmotor_01.Activity;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,6 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.Fragment.SplashFragment;
+import com.efpro.bengkelmotor_01.Haversine;
+import com.efpro.bengkelmotor_01.PermissionUtils;
+import com.efpro.bengkelmotor_01.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -255,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                bengkels.clear();
 
                 /**--- with radius, for show bengkel location which in radius---**/
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {

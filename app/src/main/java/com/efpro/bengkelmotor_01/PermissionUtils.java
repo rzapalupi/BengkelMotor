@@ -14,6 +14,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
 
+import com.efpro.bengkelmotor_01.Activity.MainActivity;
+
 /**
  * Utility class for access to runtime permissions.
  */

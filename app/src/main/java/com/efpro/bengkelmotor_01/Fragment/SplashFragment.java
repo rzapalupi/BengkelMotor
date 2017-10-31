@@ -1,4 +1,4 @@
-package com.efpro.bengkelmotor_01;
+package com.efpro.bengkelmotor_01.Fragment;
 
 
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.efpro.bengkelmotor_01.R;
 
 
 /**

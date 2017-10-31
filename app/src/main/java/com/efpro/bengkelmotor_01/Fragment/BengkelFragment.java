@@ -1,4 +1,4 @@
-package com.efpro.bengkelmotor_01;
+package com.efpro.bengkelmotor_01.Fragment;
 
 
 import android.os.Bundle;
@@ -9,6 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.BengkelAdapter;
+import com.efpro.bengkelmotor_01.Activity.MainActivity;
+import com.efpro.bengkelmotor_01.R;
 
 import java.util.ArrayList;
 
@@ -23,6 +28,7 @@ public class BengkelFragment extends Fragment implements View.OnClickListener {
     BengkelAdapter bengkelAdapter;
     ArrayList<Bengkel> mBengkels;
     View mView;
+
 
     public BengkelFragment() {
         // Required empty public constructor
@@ -44,6 +50,7 @@ public class BengkelFragment extends Fragment implements View.OnClickListener {
 
         return mView;
     }
+
 
     @Override
     public void onClick(View v) {

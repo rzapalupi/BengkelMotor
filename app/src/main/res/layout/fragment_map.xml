@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.efpro.bengkelmotor_01.MapFragment">
+    tools:context="com.efpro.bengkelmotor_01.Fragment.MapFragment">
 
     <!--&lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
 
@@ -13,21 +13,113 @@
         android:id="@+id/mapLayout"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/gb1"/>
-
-    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_myLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/fab_map"
         android:layout_alignStart="@+id/fab_map"
-        android:src="@mipmap/ic_my_location"
-        />
+        android:src="@mipmap/ic_my_location" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/cdvBengkelBottom"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/gb1"/>
+
+
+    <android.support.v7.widget.CardView
+    android:id="@+id/cdvBengkelTop"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp"
+    android:background="@android:color/white"
+    >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtTNama"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NAma"/>
+            <TextView
+                android:id="@+id/txtTAlamat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtTNama"
+                android:text="Alamat"/>
+            <TextView
+                android:id="@+id/txtTJarak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/txtTAlamat"
+                android:layout_alignParentRight="true"
+                android:text="KM"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cdvBengkelBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp"
+        android:background="@android:color/white"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imgBengkel"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/txtBNama"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/imgBengkel"
+                android:text="Nama Bengkel"
+                android:textSize="28dp" />
+
+            <TextView
+                android:id="@+id/txtBAlamat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtBNama"
+                android:layout_toRightOf="@+id/imgBengkel"
+                android:text="Alamat"
+                android:textSize="24dp" />
+
+            <TextView
+                android:id="@+id/txtBJarak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@+id/imgBengkel"
+                android:text="Jarak"
+                android:textSize="18dp" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

@@ -29,17 +29,16 @@
             android:layout_below="@+id/txtNama"
             android:layout_toEndOf="@+id/imgList"
             android:text="Alamat"
-            android:textSize="25dp" />
+            android:textSize="24dp" />
 
         <TextView
             android:id="@+id/txtJarak"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/txtNama"
+            android:layout_alignBottom="@+id/imgList"
             android:text="Jarak"
-            android:textSize="25dp" />
-
+            android:textSize="18dp" />
 
     </RelativeLayout>
 
