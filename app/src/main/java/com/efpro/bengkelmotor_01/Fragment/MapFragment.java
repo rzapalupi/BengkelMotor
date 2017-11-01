@@ -9,14 +9,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.Activity.MainActivity;
+import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +45,7 @@ public class MapFragment extends Fragment
     ArrayList<Bengkel>      tmpBengkel;
     TextView                txtTNama, txtTAlamat, txtTJarak,
                             txtBNama, txtBAlamat, txtBJarak;
+    CardView                cdvBengkelBottom;
 
     public MapFragment() {
         // Required empty public constructor
@@ -54,19 +56,21 @@ public class MapFragment extends Fragment
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        mView           = inflater.inflate(R.layout.fragment_map, container, false);
-        fab_map         = (FloatingActionButton) mView.findViewById(R.id.fab_map);
-        txtTNama       = (TextView) mView.findViewById(R.id.txtTNama);
-        txtTAlamat     = (TextView) mView.findViewById(R.id.txtTAlamat);
-        txtTJarak      = (TextView) mView.findViewById(R.id.txtTJarak);
-        txtBNama       = (TextView) mView.findViewById(R.id.txtBNama);
-        txtBAlamat     = (TextView) mView.findViewById(R.id.txtBAlamat);
-        txtBJarak      = (TextView) mView.findViewById(R.id.txtBJarak);
-        fab_myLocation  = (FloatingActionButton) mView.findViewById(R.id.fab_myLocation);
-        tmpBengkel      = ((MainActivity)getActivity()).getBengkelList();
+        mView               = inflater.inflate(R.layout.fragment_map, container, false);
+        fab_map             = (FloatingActionButton) mView.findViewById(R.id.fab_map);
+        txtTNama            = (TextView) mView.findViewById(R.id.txtTNama);
+        txtTAlamat          = (TextView) mView.findViewById(R.id.txtTAlamat);
+        txtTJarak           = (TextView) mView.findViewById(R.id.txtTJarak);
+        txtBNama            = (TextView) mView.findViewById(R.id.txtBNama);
+        txtBAlamat          = (TextView) mView.findViewById(R.id.txtBAlamat);
+        txtBJarak           = (TextView) mView.findViewById(R.id.txtBJarak);
+        fab_myLocation      = (FloatingActionButton) mView.findViewById(R.id.fab_myLocation);
+        cdvBengkelBottom    = (CardView) mView.findViewById(R.id.cdvBengkelBottom);
+        tmpBengkel          = ((MainActivity)getActivity()).getBengkelList();
 
         fab_map.setOnClickListener(this);
         fab_myLocation.setOnClickListener(this);
+        cdvBengkelBottom.setOnClickListener(this);
 
 
         //Cardview menampilkan bengkel terdekat
@@ -134,6 +138,13 @@ public class MapFragment extends Fragment
             case R.id.fab_myLocation:
                 LatLng myLocation = new LatLng(((MainActivity) getActivity()).getLatitude(), (((MainActivity) getActivity()).getLongitude()));
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+            break;
+            case R.id.cdvBengkelBottom:
+//                Bengkel bengkel = tmpBengkel.get();
+//                Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
+//                intent.putExtra("BENGKEL",bengkel);
+//                startActivity(intent);
+            break;
         }
     }
 
@@ -148,7 +159,6 @@ public class MapFragment extends Fragment
         }
         return false;
     }
-
 
 
 }

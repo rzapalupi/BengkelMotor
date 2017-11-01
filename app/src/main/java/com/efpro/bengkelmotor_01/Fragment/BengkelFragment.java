@@ -1,6 +1,7 @@
 package com.efpro.bengkelmotor_01.Fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -8,11 +9,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
+import com.efpro.bengkelmotor_01.Activity.MainActivity;
 import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.BengkelAdapter;
-import com.efpro.bengkelmotor_01.Activity.MainActivity;
 import com.efpro.bengkelmotor_01.R;
 
 import java.util.ArrayList;
@@ -21,7 +24,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BengkelFragment extends Fragment implements View.OnClickListener {
+public class BengkelFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     ListView bengkelListView;
     FloatingActionButton fab_bengkel;
@@ -48,6 +51,8 @@ public class BengkelFragment extends Fragment implements View.OnClickListener {
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();
 
+        bengkelListView.setOnItemClickListener(this);
+
         return mView;
     }
 
@@ -61,5 +66,13 @@ public class BengkelFragment extends Fragment implements View.OnClickListener {
                 ft.replace(R.id.mainLayout, mapFragment).commit();
             break;
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Bengkel bengkel = mBengkels.get(position);
+        Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
+        intent.putExtra("BENGKEL",bengkel);
+        startActivity(intent);
     }
 }
