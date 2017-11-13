@@ -2,6 +2,7 @@ package com.efpro.bengkelmotor_01.Fragment;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.MainActivity;
 import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.R;
@@ -45,7 +47,8 @@ public class MapFragment extends Fragment
     ArrayList<Bengkel>      tmpBengkel;
     TextView                txtTNama, txtTAlamat, txtTJarak,
                             txtBNama, txtBAlamat, txtBJarak;
-    CardView                cdvBengkelBottom;
+    CardView                cdvBengkelTop, cdvBengkelBottom;
+    int setTag;
 
     public MapFragment() {
         // Required empty public constructor
@@ -65,19 +68,15 @@ public class MapFragment extends Fragment
         txtBAlamat          = (TextView) mView.findViewById(R.id.txtBAlamat);
         txtBJarak           = (TextView) mView.findViewById(R.id.txtBJarak);
         fab_myLocation      = (FloatingActionButton) mView.findViewById(R.id.fab_myLocation);
+        cdvBengkelTop       = (CardView) mView.findViewById(R.id.cdvBengkelTop);
         cdvBengkelBottom    = (CardView) mView.findViewById(R.id.cdvBengkelBottom);
         tmpBengkel          = ((MainActivity)getActivity()).getBengkelList();
 
         fab_map.setOnClickListener(this);
         fab_myLocation.setOnClickListener(this);
+        cdvBengkelTop.setOnClickListener(this);
         cdvBengkelBottom.setOnClickListener(this);
 
-
-        //Cardview menampilkan bengkel terdekat
-        Bengkel bengkel = tmpBengkel.get(0);
-        txtTNama.setText(bengkel.getbNama());
-        txtTAlamat.setText(bengkel.getbAlamat());
-        txtTJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
 
@@ -93,6 +92,16 @@ public class MapFragment extends Fragment
             mMapView.onResume();
             mMapView.getMapAsync(this);
         }
+        //Cardview menampilkan bengkel terdekat
+        try{
+            Bengkel bengkel = tmpBengkel.get(0);
+            txtTNama.setText(bengkel.getbNama());
+            txtTAlamat.setText(bengkel.getbAlamat());
+            txtTJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -139,11 +148,17 @@ public class MapFragment extends Fragment
                 LatLng myLocation = new LatLng(((MainActivity) getActivity()).getLatitude(), (((MainActivity) getActivity()).getLongitude()));
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
             break;
+            case R.id.cdvBengkelTop:
+                Bengkel topbengkel = tmpBengkel.get(0);
+                Intent topbengkelintent = new Intent(getActivity(), DetailBengkelActivity.class);
+                topbengkelintent.putExtra("BENGKEL",topbengkel);
+                startActivity(topbengkelintent);
+            break;
             case R.id.cdvBengkelBottom:
-//                Bengkel bengkel = tmpBengkel.get();
-//                Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
-//                intent.putExtra("BENGKEL",bengkel);
-//                startActivity(intent);
+                Bengkel bengkel = tmpBengkel.get(setTag);
+                Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
+                intent.putExtra("BENGKEL",bengkel);
+                startActivity(intent);
             break;
         }
     }
@@ -155,6 +170,8 @@ public class MapFragment extends Fragment
                 txtBNama.setText(bengkel.getbNama());
                 txtBAlamat.setText(bengkel.getbAlamat());
                 txtBJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
+                setTag = tmpBengkel.indexOf(bengkel);
+                Log.d("cardview", "index = " + setTag);
             }
         }
         return false;

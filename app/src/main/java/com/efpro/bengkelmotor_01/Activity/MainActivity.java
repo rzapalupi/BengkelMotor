@@ -79,7 +79,9 @@ public class MainActivity extends AppCompatActivity implements
 //        fab.setOnClickListener(this);
 
         //Set firebase database
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
+        mBengkelRef.keepSynced(true);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // getting GPS status
@@ -142,18 +144,16 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
                 // if GPS Enabled get lat/long using GPS Services
-                if (isGPSEnabled) {
-                    if (location == null) {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
-                        Log.d("activity", "RLOC: GPS Enabled");
-                        if (locationManager != null) {
-                            location = locationManager
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                Log.d("activity", "RLOC: loc by GPS");
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                            }
+                else if (isGPSEnabled) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+                    Log.d("activity", "RLOC: GPS Enabled");
+                    if (locationManager != null) {
+                        location = locationManager
+                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if (location != null) {
+                            Log.d("activity", "RLOC: loc by GPS");
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
                         }
                     }
                 }
@@ -301,8 +301,5 @@ public class MainActivity extends AppCompatActivity implements
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.mainLayout, splashFragment).commit();
     }
-
-
-
 
 }
