@@ -3,6 +3,8 @@ package com.efpro.bengkelmotor_01;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+
 /**
  * Created by rzapalupi on 10/26/2017.
  */
@@ -16,17 +18,30 @@ public class Bengkel implements Parcelable {
     private double bLongitude;
     private double bJarak;
 
+
+    public HashMap<String, Long> getbJamBuka() {
+        return bJamBuka;
+    }
+
+    public void setbJamBuka(HashMap<String, Long> bJamBuka) {
+        this.bJamBuka = bJamBuka;
+    }
+
+    private HashMap<String, Long> bJamBuka;
+
+
     public Bengkel() {
     }
 
 
 
-    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude) {
+    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude, HashMap<String, Long> bJamBuka) {
         this.bNama = bNama;
         this.bAlamat = bAlamat;
         this.bTelepon = bTelepon;
         this.bLatitude = bLatitude;
         this.bLongitude = bLongitude;
+        this.bJamBuka = bJamBuka;
     }
 
     public String getbNama() {
@@ -91,6 +106,7 @@ public class Bengkel implements Parcelable {
         dest.writeDouble(this.bLatitude);
         dest.writeDouble(this.bLongitude);
         dest.writeDouble(this.bJarak);
+        dest.writeSerializable(this.bJamBuka);
     }
 
     protected Bengkel(Parcel in) {
@@ -100,9 +116,10 @@ public class Bengkel implements Parcelable {
         this.bLatitude = in.readDouble();
         this.bLongitude = in.readDouble();
         this.bJarak = in.readDouble();
+        this.bJamBuka = (HashMap<String, Long>) in.readSerializable();
     }
 
-    public static final Parcelable.Creator<Bengkel> CREATOR = new Parcelable.Creator<Bengkel>() {
+    public static final Creator<Bengkel> CREATOR = new Creator<Bengkel>() {
         @Override
         public Bengkel createFromParcel(Parcel source) {
             return new Bengkel(source);

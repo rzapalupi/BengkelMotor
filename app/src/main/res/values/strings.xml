@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BengkelMotor_0.1</string>
+    <string name="app_name">BengkelMotor</string>
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
         AIzaSyAjBJhV9a1erkAG8qff3tY0BczQoMhXico
@@ -12,4 +12,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="facebook_app_id">1932508860348049</string>
+    <string name="fb_login_protocol_scheme">fb1932508860348049</string>
+
 </resources>

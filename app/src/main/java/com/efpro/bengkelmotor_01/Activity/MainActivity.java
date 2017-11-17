@@ -2,6 +2,7 @@ package com.efpro.bengkelmotor_01.Activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,9 +14,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.Fragment.MapFragment;
 import com.efpro.bengkelmotor_01.Fragment.SplashFragment;
 import com.efpro.bengkelmotor_01.Haversine;
 import com.efpro.bengkelmotor_01.PermissionUtils;
@@ -32,7 +35,6 @@ import java.util.Comparator;
 
 
 public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener,
         LocationListener {
 
 
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private static final String TAG = "";
+    private static final String TAG = "MainActivity";
     /**
      * Flag indicating whether a requested permission has been denied after returning in
      * {@link #onRequestPermissionsResult(int, String[], int[])}.
@@ -50,24 +52,22 @@ public class MainActivity extends AppCompatActivity implements
     private boolean mPermissionDenied = false;
     private Double radius = 0.1;
 
-    private DatabaseReference mBengkelRef;
+    private DatabaseReference mBengkelRef, mJamBukaRef;
     private ArrayList<Bengkel> bengkels = new ArrayList<>();
 
-    //FloatingActionButton fab;
+    String bengkelID;
     Double latitude, longitude;
     Location location;
     LocationManager locationManager;
 
-    // flag for GPS status
-    boolean isGPSEnabled = false;
-    // flag for network status
-    boolean isNetworkEnabled = false;
-    // flag for GPS status
-    boolean canGetLocation = false;
-    // flag for Fragment Status
-    private boolean fragFlag;
-    // flag for called enableLocation
-    private boolean someFlag;
+
+    boolean isGPSEnabled = false; // flag for GPS status
+    boolean isNetworkEnabled = false; // flag for network status
+    boolean canGetLocation = false; //flag for GPS status
+    boolean fragFlag; // flag for Fragment Status
+    static boolean calledAlready = false; // flag for Fragment Status
+    static boolean splashFlag = false; // flag for Fragment Status
+    boolean someFlag; // flag for called enableLocation
 
 
     @Override
@@ -75,12 +75,13 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(this);
-
         //Set firebase database
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        if(!calledAlready){
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            calledAlready = true;
+        }
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
+
         mBengkelRef.keepSynced(true);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -94,24 +95,34 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.fab:
-//                if (fragFlag) {
-//                    MapFragment mapFragment = new MapFragment();
-//                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//                    ft.replace(R.id.mainLayout, mapFragment).commit();
-//                    fab.setImageResource(R.drawable.gb1);
-//                    fragFlag = false;
-//                } else {
-//                    BengkelFragment bengkelFragment = new BengkelFragment();
-//                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//                    ft.replace(R.id.mainLayout, bengkelFragment).commit();
-//                    fab.setImageResource(R.drawable.gb2);
-//                    fragFlag = true;
-//                }
-//            break;
-//        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_about:
+//                Intent intentAbout = new Intent(this, AboutActivity.class);
+//                startActivity(intentAbout);
+                break;
+            case R.id.menu_profile:
+                Intent intentProfile = new Intent(this, ProfileActivity.class);
+                startActivity(intentProfile);
+                break;
+            case R.id.menu_regbengkel:
+                Intent intentReg = new Intent(this, AddBengkelActivity.class);
+                startActivity(intentReg);
+                break;
+            case R.id.menu_tips:
+//                Intent intentTips = new Intent(this, TipsActivity.class);
+//                startActivity(intentTips);
+                break;
+        }
+
+        return true;
     }
 
     public void getLocation() {
@@ -265,15 +276,19 @@ public class MainActivity extends AppCompatActivity implements
                 /**--- with radius, for show bengkel location which in radius---**/
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
+                    //bengkelID = bengkelSnapshot.getKey();
+                    //bengkelID = String.valueOf(bengkelSnapshot);
+                    //Log.e(TAG,"ID: " + bengkelID);
                     if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
                             bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
                         Log.e("Nama", bengkel.getbNama());
-                        Log.e("Alamat", bengkel.getbAlamat());
+                        Log.e("JamBuka", String.valueOf(bengkel.getbJamBuka()));
                         double haversine = new Haversine().Formula(latitude,longitude,bengkel.getbLatitude(),bengkel.getbLongitude());
                         bengkel.setbJarak(haversine);
                         bengkels.add(bengkel);
                     }
                 }
+
                 //Sorting jarak terdekat
                 Collections.sort(bengkels, new Comparator<Bengkel>() {
                     @Override
@@ -297,9 +312,17 @@ public class MainActivity extends AppCompatActivity implements
         };
         mBengkelRef.addValueEventListener(valueEventListener);
 
-        SplashFragment splashFragment = new SplashFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.mainLayout, splashFragment).commit();
+        if(!splashFlag){
+            SplashFragment splashFragment = new SplashFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.mainLayout, splashFragment).commit();
+            splashFlag = true;
+        } else {
+            MapFragment mapFragment = new MapFragment();
+            FragmentTransaction ftmap = getSupportFragmentManager().beginTransaction();
+            ftmap.replace(R.id.mainLayout, mapFragment).commit();
+        }
+
     }
 
 }

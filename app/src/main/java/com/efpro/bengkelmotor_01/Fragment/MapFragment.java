@@ -77,7 +77,6 @@ public class MapFragment extends Fragment
         cdvBengkelTop.setOnClickListener(this);
         cdvBengkelBottom.setOnClickListener(this);
 
-
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
 
         return mView;
@@ -92,6 +91,14 @@ public class MapFragment extends Fragment
             mMapView.onResume();
             mMapView.getMapAsync(this);
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        MapsInitializer.initialize(getActivity());
+        mGoogleMap = googleMap;
+        mGoogleMap.setOnMarkerClickListener(this);
+
         //Cardview menampilkan bengkel terdekat
         try{
             Bengkel bengkel = tmpBengkel.get(0);
@@ -101,14 +108,6 @@ public class MapFragment extends Fragment
         } catch (Exception e){
             e.printStackTrace();
         }
-
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        MapsInitializer.initialize(getContext());
-        mGoogleMap = googleMap;
-        mGoogleMap.setOnMarkerClickListener(this);
 
         //Add marker for each bengkel
         for (Bengkel bengkel:tmpBengkel) {
