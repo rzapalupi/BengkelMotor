@@ -4,7 +4,143 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.efpro.bengkelmotor_01.Activity.AddBengkelActivity">
+    tools:context="com.efpro.bengkelmotor_01.Activity.AddBengkelActivity"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:id="@+id/tNama"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/edtNamaBengkel"
+            android:text="NAMA BENGKEL" />
+
+        <TextView
+            android:id="@+id/tAlamat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/edtAlamat"
+            android:text="ALAMAT" />
+
+        <TextView
+            android:id="@+id/tTelepon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/edtTelepon"
+            android:text="TELEPON" />
+
+        <TextView
+            android:id="@+id/tJamBuka"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tTelepon"
+            android:layout_marginTop="26dp"
+            android:text="JAM BUKA" />
+
+
+        <EditText
+            android:id="@+id/edtNamaBengkel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/tAlamat"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="70dp"
+            android:text="Bengkel Sruni"/>
+
+        <EditText
+            android:id="@+id/edtAlamat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edtNamaBengkel"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/edtNamaBengkel"
+            android:text="Bengkel Sruni"/>
+
+        <EditText
+            android:id="@+id/edtTelepon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/edtAlamat"
+            android:layout_below="@+id/edtAlamat"
+            android:text="Bengkel Sruni" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:id="@+id/tSenin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Senin"/>
+
+        <TextView
+            android:id="@+id/tSelasa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tSenin"
+            android:text="Selasa" />
+
+        <TextView
+            android:id="@+id/tRabu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rabu" />
+
+        <TextView
+            android:id="@+id/tKamis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kamis" />
+
+        <TextView
+            android:id="@+id/tJumat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jumat" />
+
+        <TextView
+            android:id="@+id/tSabtu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sabtu" />
+
+        <TextView
+            android:id="@+id/tMinggu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Minggu" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnSetLokasi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SET LOKASI"/>
+
+    <TextView
+        android:id="@+id/txtLat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LatLng" />
+
+    <TextView
+        android:id="@+id/txtLng"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LatLng" />
+
+
 
 
 

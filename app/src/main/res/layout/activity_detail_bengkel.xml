@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:clickable="true"
         app:layout_anchor="@+id/header"
         app:layout_anchorGravity="bottom|right|end"/>
 

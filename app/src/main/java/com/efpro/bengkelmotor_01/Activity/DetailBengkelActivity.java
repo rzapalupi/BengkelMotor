@@ -26,6 +26,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
 
     private static final String TAG = "DetailActivity";
 
+
     FloatingActionButton fab_navigation;
     TextView txtDNama, txtDAlamat, txtDJamBuka, txtDTelepon;
     Intent mapIntent;
@@ -39,19 +40,23 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_bengkel);
 
-        fab_navigation = (FloatingActionButton) findViewById(R.id.fab_navigation);
-        txtDNama = (TextView) findViewById(R.id.txtDNama);
-        txtDAlamat = (TextView) findViewById(R.id.txtDAlamat);
-        txtDJamBuka = (TextView) findViewById(R.id.txtDJamBuka);
-        txtDTelepon = (TextView) findViewById(R.id.txtDTelepon);
+        fab_navigation  = (FloatingActionButton) findViewById(R.id.fab_navigation);
+        txtDNama        = (TextView) findViewById(R.id.txtDNama);
+        txtDAlamat      = (TextView) findViewById(R.id.txtDAlamat);
+        txtDJamBuka     = (TextView) findViewById(R.id.txtDJamBuka);
+        txtDTelepon     = (TextView) findViewById(R.id.txtDTelepon);
+
+        fab_navigation.setOnClickListener(this);
 
 
         Bengkel detailBengkel = getIntent().getParcelableExtra("BENGKEL");
         hashMap = detailBengkel.getbJamBuka();
         txtDNama.setText(detailBengkel.getbNama());
         txtDAlamat.setText(detailBengkel.getbAlamat());
+        latlong = detailBengkel.getbLatitude() + "," + detailBengkel.getbLongitude();
 
 
+        //Sorting day
         String today;
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE, MMM dd yyyy", new Locale("in", "ID", "ID"));
         SimpleDateFormat dft = new SimpleDateFormat("EEEE", new Locale("in", "ID", "ID"));
@@ -111,4 +116,5 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
             break;
         }
     }
+
 }

@@ -25,6 +25,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="LOGOUT"/>
+        <Button
+            android:id="@+id/btnRegBengkel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LOGOUT"/>
 
     </LinearLayout>
 
