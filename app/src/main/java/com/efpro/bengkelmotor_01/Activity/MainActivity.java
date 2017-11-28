@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements
     private boolean mPermissionDenied = false;
     private Double radius = 0.1;
 
-    private DatabaseReference mBengkelRef, mJamBukaRef;
+    private DatabaseReference mBengkelRef;
     private ArrayList<Bengkel> bengkels = new ArrayList<>();
 
     String bengkelID;

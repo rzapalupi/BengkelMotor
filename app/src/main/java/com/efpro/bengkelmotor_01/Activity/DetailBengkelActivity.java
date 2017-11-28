@@ -32,8 +32,8 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     Intent mapIntent;
     Uri gmmIntentUri;
     String latlong;
-    HashMap<String, Long> hashMap;
-    Map<Date, Long> sortedMap = new TreeMap<Date, Long>();
+    HashMap<String, String> hashMap;
+    Map<Date, String> sortedMap = new TreeMap<Date, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +74,9 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
             c.add(Calendar.DATE, 1);  // number of days to add
             today = dft.format(c.getTime());  // dt is now the new date
             Log.e(TAG, "Hari besok : " + today);
-            for (Map.Entry<String, Long> entry : hashMap.entrySet()) {
+            for (Map.Entry<String, String> entry : hashMap.entrySet()) {
                 String hari = entry.getKey();
-                Long jam = entry.getValue();
+                String jam = entry.getValue();
                 if (hari.equals(today)) {
                     sortedMap.put(c.getTime(), jam);
                     Log.e(TAG, "Hari sorted : " + c.getTime());
@@ -84,9 +84,9 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
             }
         }
 
-        for (Map.Entry<Date, Long> entry : sortedMap.entrySet()) {
+        for (Map.Entry<Date, String> entry : sortedMap.entrySet()) {
             Date date = entry.getKey();
-            Long jambuka = entry.getValue();
+            String jambuka = entry.getValue();
             String jadwal = dft.format(date);
             String tmpJamBuka = (jadwal + "\t\t\t\t\t\t\t" + ": " + jambuka);
             if (txtDJamBuka.getText().length() > 0) {

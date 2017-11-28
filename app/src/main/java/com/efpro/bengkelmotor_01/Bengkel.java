@@ -17,17 +17,16 @@ public class Bengkel implements Parcelable {
     private double bLatitude;
     private double bLongitude;
     private double bJarak;
+    private HashMap<String, String> bJamBuka;
 
 
-    public HashMap<String, Long> getbJamBuka() {
+    public HashMap<String, String> getbJamBuka() {
         return bJamBuka;
     }
 
-    public void setbJamBuka(HashMap<String, Long> bJamBuka) {
+    public void setbJamBuka(HashMap<String, String> bJamBuka) {
         this.bJamBuka = bJamBuka;
     }
-
-    private HashMap<String, Long> bJamBuka;
 
 
     public Bengkel() {
@@ -35,7 +34,7 @@ public class Bengkel implements Parcelable {
 
 
 
-    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude, HashMap<String, Long> bJamBuka) {
+    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude, HashMap<String, String> bJamBuka) {
         this.bNama = bNama;
         this.bAlamat = bAlamat;
         this.bTelepon = bTelepon;
@@ -116,7 +115,7 @@ public class Bengkel implements Parcelable {
         this.bLatitude = in.readDouble();
         this.bLongitude = in.readDouble();
         this.bJarak = in.readDouble();
-        this.bJamBuka = (HashMap<String, Long>) in.readSerializable();
+        this.bJamBuka = (HashMap<String, String>) in.readSerializable();
     }
 
     public static final Creator<Bengkel> CREATOR = new Creator<Bengkel>() {

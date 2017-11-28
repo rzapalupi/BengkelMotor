@@ -7,126 +7,469 @@
     tools:context="com.efpro.bengkelmotor_01.Activity.AddBengkelActivity"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_margin="8dp">
 
-        <TextView
-            android:id="@+id/tNama"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/edtNamaBengkel"
-            android:text="NAMA BENGKEL" />
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tNama"
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="wrap_content"
+                android:text="NAMA BENGKEL" />
+            <EditText
+                android:id="@+id/edtNamaBengkel"
+                android:layout_width="0dp"
+                android:layout_weight="7"
+                android:layout_height="wrap_content"
+                android:hint="Nama Bengkel"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tAlamat"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/edtAlamat"
-            android:text="ALAMAT" />
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tAlamat"
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="wrap_content"
+                android:text="ALAMAT" />
+            <EditText
+                android:id="@+id/edtAlamat"
+                android:layout_width="0dp"
+                android:layout_weight="7"
+                android:layout_height="wrap_content"
+                android:hint="Alamat Bengkel"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tTelepon"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/edtTelepon"
-            android:text="TELEPON" />
-
-        <TextView
-            android:id="@+id/tJamBuka"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/tTelepon"
-            android:layout_marginTop="26dp"
-            android:text="JAM BUKA" />
-
-
-        <EditText
-            android:id="@+id/edtNamaBengkel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/tAlamat"
-            android:layout_alignParentEnd="true"
-            android:layout_marginLeft="70dp"
-            android:text="Bengkel Sruni"/>
-
-        <EditText
-            android:id="@+id/edtAlamat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edtNamaBengkel"
-            android:layout_alignParentEnd="true"
-            android:layout_alignStart="@+id/edtNamaBengkel"
-            android:text="Bengkel Sruni"/>
-
-        <EditText
-            android:id="@+id/edtTelepon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignStart="@+id/edtAlamat"
-            android:layout_below="@+id/edtAlamat"
-            android:text="Bengkel Sruni" />
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tTelepon"
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="wrap_content"
+                android:text="TELEPON" />
+            <EditText
+                android:id="@+id/edtTelepon"
+                android:layout_width="0dp"
+                android:layout_weight="7"
+                android:layout_height="wrap_content"
+                android:hint="No Telepon Bengkel"/>
+        </LinearLayout>
 
 
-    </RelativeLayout>
 
-    <RelativeLayout
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tJamBuka"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:text="JAM BUKA" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_margin="8dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cbH1"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="onCheckboxClicked"/>
         <TextView
             android:id="@+id/tSenin"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Senin"/>
+            android:layout_weight="3"
+            android:layout_gravity="center"
+            android:text="Senin" />
+
+        <EditText
+            android:id="@+id/edtStartH1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:editable="false"
+            android:focusable="false"
+            android:textSize="12sp"
+            android:hint="Jam Buka"
+            android:textAlignment="center"
+            android:enabled="false"/>
 
         <TextView
-            android:id="@+id/tSelasa"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tSenin"
-            android:text="Selasa" />
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:text="-" />
 
-        <TextView
-            android:id="@+id/tRabu"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/edtEndH1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Rabu" />
+            android:layout_weight="3"
+            android:editable="false"
+            android:focusable="false"
+            android:textSize="12sp"
+            android:hint="Jam Tutup"
+            android:textAlignment="center"
+            android:enabled="false"/>
 
-        <TextView
-            android:id="@+id/tKamis"
-            android:layout_width="wrap_content"
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kamis" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tJumat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Jumat" />
+            <CheckBox
+                android:id="@+id/cbH2"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:onClick="onCheckboxClicked"/>
+            <TextView
+                android:id="@+id/tSelasa"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:text="Selasa" />
 
-        <TextView
-            android:id="@+id/tSabtu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sabtu" />
+            <EditText
+                android:id="@+id/edtStartH2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Buka"
+                android:textAlignment="center"
+                android:enabled="false"/>
 
-        <TextView
-            android:id="@+id/tMinggu"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="-" />
+
+            <EditText
+                android:id="@+id/edtEndH2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Tutup"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Minggu" />
-    </RelativeLayout>
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cbH3"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:onClick="onCheckboxClicked"/>
+            <TextView
+                android:id="@+id/tRabu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:text="Rabu" />
+
+            <EditText
+                android:id="@+id/edtStartH3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Buka"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="-" />
+
+            <EditText
+                android:id="@+id/edtEndH3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Tutup"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cbH4"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:onClick="onCheckboxClicked"/>
+            <TextView
+                android:id="@+id/tKamis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:text="Kamis" />
+
+            <EditText
+                android:id="@+id/edtStartH4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Buka"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="-" />
+
+            <EditText
+                android:id="@+id/edtEndH4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Tutup"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cbH5"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:onClick="onCheckboxClicked"/>
+            <TextView
+                android:id="@+id/tJumat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:text="Jumat" />
+
+            <EditText
+                android:id="@+id/edtStartH5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Buka"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="-" />
+
+            <EditText
+                android:id="@+id/edtEndH5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Tutup"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cbH6"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:onClick="onCheckboxClicked"/>
+            <TextView
+                android:id="@+id/tSabtu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:text="Sabtu" />
+
+            <EditText
+                android:id="@+id/edtStartH6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Buka"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="-" />
+
+            <EditText
+                android:id="@+id/edtEndH6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Tutup"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cbH7"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:onClick="onCheckboxClicked"/>
+            <TextView
+                android:id="@+id/tMinggu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:text="Minggu" />
+
+            <EditText
+                android:id="@+id/edtStartH7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Buka"
+                android:textAlignment="center"
+                android:enabled="false"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="-" />
+
+            <EditText
+                android:id="@+id/edtEndH7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="12sp"
+                android:hint="Jam Tutup"
+                android:textAlignment="center"
+                android:enabled="false"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+
 
     <Button
         android:id="@+id/btnSetLokasi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SET LOKASI"/>
+
+    <Button
+        android:id="@+id/btnAddBengkel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ADD BENGKEL"/>
 
     <TextView
         android:id="@+id/txtLat"
@@ -139,7 +482,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="LatLng" />
-
 
 
 
