@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.Fragment.MapFragment;
@@ -23,6 +25,7 @@ import com.efpro.bengkelmotor_01.Fragment.SplashFragment;
 import com.efpro.bengkelmotor_01.Haversine;
 import com.efpro.bengkelmotor_01.PermissionUtils;
 import com.efpro.bengkelmotor_01.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements
     private boolean mPermissionDenied = false;
     private Double radius = 0.1;
 
+    private FirebaseAuth mAuth;
     private DatabaseReference mBengkelRef;
     private ArrayList<Bengkel> bengkels = new ArrayList<>();
 
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements
     Double latitude, longitude;
     Location location;
     LocationManager locationManager;
+    Menu optionsMenu;
 
 
     boolean isGPSEnabled = false; // flag for GPS status
@@ -68,12 +73,15 @@ public class MainActivity extends AppCompatActivity implements
     static boolean calledAlready = false; // flag for Fragment Status
     static boolean splashFlag = false; // flag for Fragment Status
     boolean someFlag; // flag for called enableLocation
+    boolean backpress;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
+
 
         //Set firebase database
         if(!calledAlready){
@@ -98,6 +106,12 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
+        optionsMenu = menu;
+        if (mAuth.getCurrentUser() != null) {
+            optionsMenu.getItem(0).setVisible(true);
+        } else {
+            optionsMenu.getItem(0).setVisible(false);
+        }
         return true;
     }
 
@@ -107,19 +121,19 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.menu_about:
 //                Intent intentAbout = new Intent(this, AboutActivity.class);
 //                startActivity(intentAbout);
-                break;
+            break;
             case R.id.menu_profile:
                 Intent intentProfile = new Intent(this, ProfileActivity.class);
                 startActivity(intentProfile);
-                break;
+            break;
             case R.id.menu_regbengkel:
                 Intent intentReg = new Intent(this, AddBengkelActivity.class);
                 startActivity(intentReg);
-                break;
+            break;
             case R.id.menu_tips:
 //                Intent intentTips = new Intent(this, TipsActivity.class);
 //                startActivity(intentTips);
-                break;
+            break;
         }
 
         return true;
@@ -325,4 +339,19 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if(backpress){
+            super.onBackPressed();
+        } else {
+            Toast.makeText(this, "Tekan lagi untuk keluar", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    backpress = false;
+                }
+            }, 3000);
+            backpress = true;
+        }
+    }
 }

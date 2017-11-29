@@ -6,7 +6,8 @@
     <item
         android:title="Register Bengkel"
         android:id="@+id/menu_regbengkel"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        android:visible="false"/>
     <item
         android:title="Tips"
         android:id="@+id/menu_tips"

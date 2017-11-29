@@ -15,67 +15,110 @@
         app:layout_anchor="@+id/header"
         app:layout_anchorGravity="bottom|right|end"/>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cdvDetailBengkel"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="8dp"
-        android:background="@android:color/white"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:id="@+id/cdvDetailBengkel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_margin="8dp"
+            android:background="@android:color/white"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="2dp">
 
-            <FrameLayout
-                android:id="@+id/header"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imgDetailBengkel"
+                <FrameLayout
+                    android:id="@+id/header"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/imgDetailBengkel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_launcher" />
+
+                    <TextView
+                        android:id="@+id/txtDNama"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_margin="8dp"
+                        android:text="Nama Bengkel" />
+
+                </FrameLayout>
 
                 <TextView
-                    android:id="@+id/txtDNama"
+                    android:id="@+id/txtDAlamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="Alamat" />
+
+                <TextView
+                    android:id="@+id/txtDJamBuka"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="Jam Buka" />
+
+                <TextView
+                    android:id="@+id/txtDTelepon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="Telepon" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cdvReviewBengkel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@android:color/white"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
                     android:layout_margin="8dp"
-                    android:text="Nama Bengkel" />
+                    android:text="REVIEW"/>
 
-            </FrameLayout>
+                <TextView
+                    android:id="@+id/txtUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="Username"/>
 
-            <TextView
-                android:id="@+id/txtDAlamat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Alamat" />
+                <TextView
+                    android:id="@+id/txtComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="Comment"/>
 
-            <TextView
-                android:id="@+id/txtDJamBuka"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Jam Buka" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/txtDTelepon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Telepon" />
+        </android.support.v7.widget.CardView>
 
+    </LinearLayout>
 
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
 
 </android.support.design.widget.CoordinatorLayout>

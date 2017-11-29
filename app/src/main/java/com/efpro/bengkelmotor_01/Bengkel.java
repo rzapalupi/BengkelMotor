@@ -18,30 +18,21 @@ public class Bengkel implements Parcelable {
     private double bLongitude;
     private double bJarak;
     private HashMap<String, String> bJamBuka;
-
-
-    public HashMap<String, String> getbJamBuka() {
-        return bJamBuka;
-    }
-
-    public void setbJamBuka(HashMap<String, String> bJamBuka) {
-        this.bJamBuka = bJamBuka;
-    }
-
+    private String bUid;
 
     public Bengkel() {
     }
 
-
-
-    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude, HashMap<String, String> bJamBuka) {
+    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude, HashMap<String, String> bJamBuka, String bUid) {
         this.bNama = bNama;
         this.bAlamat = bAlamat;
         this.bTelepon = bTelepon;
         this.bLatitude = bLatitude;
         this.bLongitude = bLongitude;
         this.bJamBuka = bJamBuka;
+        this.bUid = bUid;
     }
+
 
     public String getbNama() {
         return bNama;
@@ -91,6 +82,22 @@ public class Bengkel implements Parcelable {
         this.bJarak = bJarak;
     }
 
+    public HashMap<String, String> getbJamBuka() {
+        return bJamBuka;
+    }
+
+    public void setbJamBuka(HashMap<String, String> bJamBuka) {
+        this.bJamBuka = bJamBuka;
+    }
+
+    public String getbUid() {
+        return bUid;
+    }
+
+    public void setbUid(String bUid) {
+        this.bUid = bUid;
+    }
+
 
     @Override
     public int describeContents() {
@@ -106,6 +113,7 @@ public class Bengkel implements Parcelable {
         dest.writeDouble(this.bLongitude);
         dest.writeDouble(this.bJarak);
         dest.writeSerializable(this.bJamBuka);
+        dest.writeString(this.bUid);
     }
 
     protected Bengkel(Parcel in) {
@@ -116,6 +124,7 @@ public class Bengkel implements Parcelable {
         this.bLongitude = in.readDouble();
         this.bJarak = in.readDouble();
         this.bJamBuka = (HashMap<String, String>) in.readSerializable();
+        this.bUid = in.readString();
     }
 
     public static final Creator<Bengkel> CREATOR = new Creator<Bengkel>() {

@@ -9,16 +9,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/imgProfileUser"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="8dp"
+            android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher_round"/>
         <TextView
+            android:id="@+id/txtNamaUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:text="Nama Profile"
+
             android:textSize="18dp"/>
         <Button
             android:id="@+id/btnLogOut"
@@ -29,7 +37,7 @@
             android:id="@+id/btnRegBengkel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LOGOUT"/>
+            android:text="REGISTRASI BENGKEL"/>
 
     </LinearLayout>
 

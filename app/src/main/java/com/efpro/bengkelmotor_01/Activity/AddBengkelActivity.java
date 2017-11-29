@@ -9,9 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -19,6 +23,8 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -36,21 +42,21 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     EditText edtEndH1, edtEndH2, edtEndH3, edtEndH4, edtEndH5, edtEndH6, edtEndH7;
     CheckBox cbH1, cbH2, cbH3, cbH4, cbH5, cbH6, cbH7;
     TextView tSenin, tSelasa, tRabu, tKamis, tJumat, tSabtu, tMinggu;
-    TextView txtLat, txtLng;
-    String nama, alamat, telepon;
+    ImageView imgSnapMap;
+    String nama, alamat, telepon, uid;
+    RelativeLayout ly;
     double latitude, longitude;
     HashMap<String, String> jambuka = new HashMap<>();
     boolean flagSetTime = false;
 
     private DatabaseReference mBengkelRef;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_bengkel);
 
-        txtLat          = (TextView) findViewById(R.id.txtLat);
-        txtLng          = (TextView) findViewById(R.id.txtLng);
         tSenin          = (TextView) findViewById(R.id.tSenin);
         tSelasa         = (TextView) findViewById(R.id.tSelasa);
         tRabu           = (TextView) findViewById(R.id.tRabu);
@@ -85,6 +91,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         edtEndH6        = (EditText) findViewById(R.id.edtEndH6);
         edtEndH7        = (EditText) findViewById(R.id.edtEndH7);
 
+        imgSnapMap      = (ImageView) findViewById(R.id.imgSnapMap);
+        ly              = (RelativeLayout) findViewById(R.id.addbengkelLayout);
+
+
         edtStartH1.setOnClickListener(this);
         edtStartH2.setOnClickListener(this);
         edtStartH3.setOnClickListener(this);
@@ -106,6 +116,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         btnAddBengkel.setOnClickListener(this);
 
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
 
 
@@ -129,6 +140,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 nama         = String.valueOf(edtNamaBengkel.getText());
                 alamat       = String.valueOf(edtAlamat.getText());
                 telepon      = String.valueOf(edtTelepon.getText());
+                uid          = user.getUid();
                 //Toast.makeText(this, "Show" + latitude + " - " + longitude , Toast.LENGTH_SHORT).show();
                 jambuka.put("Senin",    edtStartH1.getText().toString() + " - " + edtEndH1.getText().toString());
                 jambuka.put("Selasa",   edtStartH2.getText().toString() + " - " + edtEndH2.getText().toString());
@@ -146,8 +158,11 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                     }
                 }
                 Log.e(TAG, String.valueOf(jambuka));
-
-                addBengkel(nama, alamat, telepon, latitude, longitude, jambuka);
+                addBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid);
+                Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
+                Intent intentProfile = new Intent(this, ProfileActivity.class);
+                startActivity(intentProfile);
+                finish();
             break;
             case R.id.edtStartH1:
                 flagSetTime = true;
@@ -300,17 +315,22 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
                 LatLng latLng = place.getLatLng();
-                latitude    = latLng.latitude;
-                longitude   = latLng.longitude;
-                //Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                latitude = latLng.latitude;
+                longitude = latLng.longitude;
             }
+            int layWidth = ly.getWidth();
+            Log.e(TAG, "onActivityResult: "+ layWidth );
+            String url = "https://maps.googleapis.com/maps/api/staticmap?markers="
+                    +latitude+ "," +longitude+ "&zoom=17&size=" +layWidth+ "x250";
+            Glide.with(this).load(url).into(imgSnapMap);
+
         }
     }
 
     public void addBengkel(String nama, String alamat, String telepon,
-                           double latitude, double longitude, HashMap<String, String> jambuka){
+                           double latitude, double longitude, HashMap<String, String> jambuka, String uid){
         String key = mBengkelRef.push().getKey();
-        Bengkel bengkel = new Bengkel(nama,alamat,telepon,latitude,longitude,jambuka);
+        Bengkel bengkel = new Bengkel(nama,alamat,telepon,latitude,longitude,jambuka, uid);
         mBengkelRef.child(key).setValue(bengkel);
     }
 
