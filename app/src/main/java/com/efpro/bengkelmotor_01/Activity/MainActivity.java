@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
     boolean isNetworkEnabled = false; // flag for network status
     boolean canGetLocation = false; //flag for GPS status
     boolean fragFlag; // flag for Fragment Status
-    static boolean calledAlready = false; // flag for Fragment Status
+    static boolean calledAlready = false; // flag for firebase Status
     static boolean splashFlag = false; // flag for Fragment Status
     boolean someFlag; // flag for called enableLocation
     boolean backpress;

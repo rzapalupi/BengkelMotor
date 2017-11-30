@@ -1,4 +1,4 @@
-package com.efpro.bengkelmotor_01;
+package com.efpro.bengkelmotor_01.Adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.R;
 
 import java.util.List;
 

@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.efpro.bengkelmotor_01.Fragment.BengkelFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <ListView
         android:id="@+id/bengkelListView"
         android:layout_width="match_parent"
