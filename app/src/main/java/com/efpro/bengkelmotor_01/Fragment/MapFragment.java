@@ -171,10 +171,17 @@ public class MapFragment extends Fragment
                 txtBJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
                 setTag = tmpBengkel.indexOf(bengkel);
                 Log.d("cardview", "index = " + setTag);
+
+                cdvBengkelBottom.setVisibility(View.VISIBLE);
+
+
             }
         }
         return false;
     }
+
+
+
 
 
 }

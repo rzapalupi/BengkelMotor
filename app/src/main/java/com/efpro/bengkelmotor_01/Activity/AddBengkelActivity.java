@@ -35,19 +35,21 @@ import java.util.Map;
 public class AddBengkelActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "AddBengkelActivity";
+    private static final String setError = "Tidak boleh kosong";
     int PLACE_PICKER_REQUEST = 1;
     Button btnSetLokasi, btnAddBengkel;
     EditText edtNamaBengkel, edtAlamat, edtTelepon;
     EditText edtStartH1, edtStartH2, edtStartH3, edtStartH4, edtStartH5, edtStartH6, edtStartH7;
     EditText edtEndH1, edtEndH2, edtEndH3, edtEndH4, edtEndH5, edtEndH6, edtEndH7;
     CheckBox cbH1, cbH2, cbH3, cbH4, cbH5, cbH6, cbH7;
-    TextView tSenin, tSelasa, tRabu, tKamis, tJumat, tSabtu, tMinggu;
+    TextView tJamBuka, tSenin, tSelasa, tRabu, tKamis, tJumat, tSabtu, tMinggu;
     ImageView imgSnapMap;
     String nama, alamat, telepon, uid;
     RelativeLayout ly;
     double latitude, longitude;
     HashMap<String, String> jambuka = new HashMap<>();
     boolean flagSetTime = false;
+    boolean lokasi = false;
 
     private DatabaseReference mBengkelRef;
     private FirebaseUser user;
@@ -57,6 +59,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_bengkel);
 
+        tJamBuka      = (TextView) findViewById(R.id.tJamBuka);
         tSenin          = (TextView) findViewById(R.id.tSenin);
         tSelasa         = (TextView) findViewById(R.id.tSelasa);
         tRabu           = (TextView) findViewById(R.id.tRabu);
@@ -137,32 +140,37 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 }
             break;
             case R.id.btnAddBengkel:
-                nama         = String.valueOf(edtNamaBengkel.getText());
-                alamat       = String.valueOf(edtAlamat.getText());
-                telepon      = String.valueOf(edtTelepon.getText());
-                uid          = user.getUid();
-                //Toast.makeText(this, "Show" + latitude + " - " + longitude , Toast.LENGTH_SHORT).show();
-                jambuka.put("Senin",    edtStartH1.getText().toString() + " - " + edtEndH1.getText().toString());
-                jambuka.put("Selasa",   edtStartH2.getText().toString() + " - " + edtEndH2.getText().toString());
-                jambuka.put("Rabu",     edtStartH3.getText().toString() + " - " + edtEndH3.getText().toString());
-                jambuka.put("Kamis",    edtStartH4.getText().toString() + " - " + edtEndH4.getText().toString());
-                jambuka.put("Jumat",    edtStartH5.getText().toString() + " - " + edtEndH5.getText().toString());
-                jambuka.put("Sabtu",    edtStartH6.getText().toString() + " - " + edtEndH6.getText().toString());
-                jambuka.put("Minggu",   edtStartH7.getText().toString() + " - " + edtEndH7.getText().toString());
+                if (isValidasi()){
+                    Toast.makeText(this, "Data Belum Lengkap", Toast.LENGTH_SHORT).show();
+                } else{
+                    nama         = String.valueOf(edtNamaBengkel.getText());
+                    alamat       = String.valueOf(edtAlamat.getText());
+                    telepon      = String.valueOf(edtTelepon.getText());
+                    uid          = user.getUid();
 
-                for (Map.Entry<String, String> entry : jambuka.entrySet()) {
-                    String hari = entry.getKey();
-                    String jam = entry.getValue();
-                    if (jam.equals(" - ")) {
-                        jambuka.put(hari, "Tutup");
+                    //Toast.makeText(this, "Show" + latitude + " - " + longitude , Toast.LENGTH_SHORT).show();
+                    jambuka.put("Senin",    edtStartH1.getText().toString() + " - " + edtEndH1.getText().toString());
+                    jambuka.put("Selasa",   edtStartH2.getText().toString() + " - " + edtEndH2.getText().toString());
+                    jambuka.put("Rabu",     edtStartH3.getText().toString() + " - " + edtEndH3.getText().toString());
+                    jambuka.put("Kamis",    edtStartH4.getText().toString() + " - " + edtEndH4.getText().toString());
+                    jambuka.put("Jumat",    edtStartH5.getText().toString() + " - " + edtEndH5.getText().toString());
+                    jambuka.put("Sabtu",    edtStartH6.getText().toString() + " - " + edtEndH6.getText().toString());
+                    jambuka.put("Minggu",   edtStartH7.getText().toString() + " - " + edtEndH7.getText().toString());
+
+                    for (Map.Entry<String, String> entry : jambuka.entrySet()) {
+                        String hari = entry.getKey();
+                        String jam = entry.getValue();
+                        if (jam.equals(" - ")) {
+                            jambuka.put(hari, "Tutup");
+                        }
                     }
+                    Log.e(TAG, String.valueOf(jambuka));
+                    addBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid);
+                    Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
+                    Intent intentProfile = new Intent(this, ProfileActivity.class);
+                    startActivity(intentProfile);
+                    finish();
                 }
-                Log.e(TAG, String.valueOf(jambuka));
-                addBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid);
-                Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
-                Intent intentProfile = new Intent(this, ProfileActivity.class);
-                startActivity(intentProfile);
-                finish();
             break;
             case R.id.edtStartH1:
                 flagSetTime = true;
@@ -235,8 +243,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 } else{
                     edtStartH1.setEnabled(false);
                     edtStartH1.setText("");
+                    edtStartH1.setError(null);
                     edtEndH1.setEnabled(false);
                     edtEndH1.setText("");
+                    edtEndH1.setError(null);
                 }
             break;
             case R.id.cbH2:
@@ -246,8 +256,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 } else{
                     edtStartH2.setEnabled(false);
                     edtStartH2.setText("");
+                    edtStartH2.setError(null);
                     edtEndH2.setEnabled(false);
                     edtEndH2.setText("");
+                    edtEndH2.setError(null);
                 }
                 break;
             case R.id.cbH3:
@@ -257,8 +269,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 } else{
                     edtStartH3.setEnabled(false);
                     edtStartH3.setText("");
+                    edtStartH3.setError(null);
                     edtEndH3.setEnabled(false);
                     edtEndH3.setText("");
+                    edtEndH3.setError(null);
 
                 }
                 break;
@@ -269,8 +283,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 } else{
                     edtStartH4.setEnabled(false);
                     edtStartH4.setText("");
+                    edtStartH4.setError(null);
                     edtEndH4.setEnabled(false);
                     edtEndH4.setText("");
+                    edtEndH4.setError(null);
                 }
                 break;
             case R.id.cbH5:
@@ -280,8 +296,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 } else{
                     edtStartH5.setEnabled(false);
                     edtStartH5.setText("");
+                    edtStartH5.setError(null);
                     edtEndH5.setEnabled(false);
                     edtEndH5.setText("");
+                    edtEndH5.setError(null);
                 }
                 break;
             case R.id.cbH6:
@@ -291,8 +309,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 } else{
                     edtStartH6.setEnabled(false);
                     edtStartH6.setText("");
+                    edtStartH6.setError(null);
                     edtEndH6.setEnabled(false);
                     edtEndH6.setText("");
+                    edtEndH6.setError(null);
                 }
                 break;
             case R.id.cbH7:
@@ -302,8 +322,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 } else{
                     edtStartH7.setEnabled(false);
                     edtStartH7.setText("");
+                    edtStartH7.setError(null);
                     edtEndH7.setEnabled(false);
                     edtEndH7.setText("");
+                    edtEndH7.setError(null);
                 }
                 break;
         }
@@ -317,6 +339,8 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 LatLng latLng = place.getLatLng();
                 latitude = latLng.latitude;
                 longitude = latLng.longitude;
+                lokasi = true;
+                btnSetLokasi.setError(null);
             }
             int layWidth = ly.getWidth();
             Log.e(TAG, "onActivityResult: "+ layWidth );
@@ -355,6 +379,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                     sHrs = String.valueOf(selectedHour);
                 }
                 edtText.setText( sHrs + ":" + sMins);
+                edtText.setError(null);
             }
         }, hour, minute, true);
         if (flagSetTime){
@@ -363,6 +388,103 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
             mTimePicker.setTitle("Jam Tutup");
         }
         mTimePicker.show();
+        tJamBuka.setError(null);
+    }
+
+    public boolean isValidasi (){
+        boolean check = false;
+        if (edtNamaBengkel.getText().toString().isEmpty()){
+            edtNamaBengkel.setError(setError);
+            check = true;
+        }
+        if (edtAlamat.getText().toString().isEmpty()){
+            edtAlamat.setError(setError);
+            check = true;
+        }
+        if (edtTelepon.getText().toString().isEmpty()){
+            edtTelepon.setError(setError);
+            check = true;
+        }
+        if (!lokasi){
+            btnSetLokasi.setError(setError);
+            check = true;
+        }
+        if (cbH1.isChecked()){
+            if(edtStartH1.getText().toString().isEmpty()){
+                edtStartH1.setError(setError);
+                check = true;
+            }
+            if(edtEndH1.getText().toString().isEmpty()){
+                edtEndH1.setError(setError);
+                check = true;
+            }
+        }
+        if (cbH2.isChecked()){
+            if(edtStartH2.getText().toString().isEmpty()){
+                edtStartH2.setError(setError);
+                check = true;
+            }
+            if(edtEndH2.getText().toString().isEmpty()){
+                edtEndH2.setError(setError);
+                check = true;
+            }
+        }
+        if (cbH3.isChecked()){
+            if(edtStartH3.getText().toString().isEmpty()){
+                edtStartH3.setError(setError);
+                check = true;
+            }
+            if(edtEndH3.getText().toString().isEmpty()){
+                edtEndH3.setError(setError);
+                check = true;
+            }
+        }
+        if (cbH4.isChecked()){
+            if(edtStartH4.getText().toString().isEmpty()){
+                edtStartH4.setError(setError);
+                check = true;
+            }
+            if(edtEndH4.getText().toString().isEmpty()){
+                edtEndH4.setError(setError);
+                check = true;
+            }
+        }
+        if (cbH5.isChecked()){
+            if(edtStartH5.getText().toString().isEmpty()){
+                edtStartH5.setError(setError);
+                check = true;
+            }
+            if(edtEndH5.getText().toString().isEmpty()){
+                edtEndH5.setError(setError);
+                check = true;
+            }
+        }
+        if (cbH6.isChecked()){
+            if(edtStartH6.getText().toString().isEmpty()){
+                edtStartH6.setError(setError);
+                check = true;
+            }
+            if(edtEndH6.getText().toString().isEmpty()){
+                edtEndH6.setError(setError);
+                check = true;
+            }
+        }
+        if (cbH7.isChecked()){
+            if(edtStartH7.getText().toString().isEmpty()){
+                edtStartH7.setError(setError);
+                check = true;
+            }
+            if(edtEndH7.getText().toString().isEmpty()){
+                edtEndH7.setError(setError);
+                check = true;;
+            }
+        }
+        if(!cbH1.isChecked() && !cbH2.isChecked() && !cbH3.isChecked() && !cbH4.isChecked()
+                && !cbH5.isChecked() && !cbH6.isChecked() && !cbH7.isChecked()){
+            tJamBuka.setError(setError);
+            check = true;;
+        }
+        return check;
     }
 
 }
