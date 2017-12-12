@@ -16,4 +16,6 @@
     <string name="facebook_app_id">1932508860348049</string>
     <string name="fb_login_protocol_scheme">fb1932508860348049</string>
 
+    <string name="sample"> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
+
 </resources>

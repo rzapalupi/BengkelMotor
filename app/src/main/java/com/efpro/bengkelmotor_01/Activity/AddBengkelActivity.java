@@ -354,7 +354,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     public void addBengkel(String nama, String alamat, String telepon,
                            double latitude, double longitude, HashMap<String, String> jambuka, String uid){
         String key = mBengkelRef.push().getKey();
-        Bengkel bengkel = new Bengkel(nama,alamat,telepon,latitude,longitude,jambuka, uid);
+        Bengkel bengkel = new Bengkel(nama,alamat,telepon,latitude,longitude,jambuka, uid, key);
         mBengkelRef.child(key).setValue(bengkel);
     }
 

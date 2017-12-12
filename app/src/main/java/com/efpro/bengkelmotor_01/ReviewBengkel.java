@@ -6,28 +6,29 @@ package com.efpro.bengkelmotor_01;
 
 public class ReviewBengkel {
 
-
-    private String uid;
+    private String username;
     private String comment;
     private int rate;
+    private String date;
 
 
     public ReviewBengkel(){
 
     }
 
-    public ReviewBengkel(String uid, String comment, int rate) {
-        this.uid = uid;
+    public ReviewBengkel(String username, String comment, int rate, String date) {
+        this.username = username;
         this.comment = comment;
         this.rate = rate;
+        this.date = date;
     }
 
-    public String getUid() {
-        return uid;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getComment() {
@@ -44,5 +45,13 @@ public class ReviewBengkel {
 
     public void setRate(int rate) {
         this.rate = rate;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

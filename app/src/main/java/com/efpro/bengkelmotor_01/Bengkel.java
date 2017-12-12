@@ -19,11 +19,9 @@ public class Bengkel implements Parcelable {
     private double bJarak;
     private HashMap<String, String> bJamBuka;
     private String bUid;
+    private String bID;
 
-    public Bengkel() {
-    }
-
-    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude, HashMap<String, String> bJamBuka, String bUid) {
+    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude,  HashMap<String, String> bJamBuka, String bUid, String bID) {
         this.bNama = bNama;
         this.bAlamat = bAlamat;
         this.bTelepon = bTelepon;
@@ -31,8 +29,8 @@ public class Bengkel implements Parcelable {
         this.bLongitude = bLongitude;
         this.bJamBuka = bJamBuka;
         this.bUid = bUid;
+        this.bID = bID;
     }
-
 
     public String getbNama() {
         return bNama;
@@ -98,6 +96,17 @@ public class Bengkel implements Parcelable {
         this.bUid = bUid;
     }
 
+    public String getbID() {
+        return bID;
+    }
+
+    public void setbID(String bID) {
+        this.bID = bID;
+    }
+
+    public Bengkel() {
+    }
+
 
     @Override
     public int describeContents() {
@@ -114,6 +123,7 @@ public class Bengkel implements Parcelable {
         dest.writeDouble(this.bJarak);
         dest.writeSerializable(this.bJamBuka);
         dest.writeString(this.bUid);
+        dest.writeString(this.bID);
     }
 
     protected Bengkel(Parcel in) {
@@ -125,6 +135,7 @@ public class Bengkel implements Parcelable {
         this.bJarak = in.readDouble();
         this.bJamBuka = (HashMap<String, String>) in.readSerializable();
         this.bUid = in.readString();
+        this.bID = in.readString();
     }
 
     public static final Creator<Bengkel> CREATOR = new Creator<Bengkel>() {

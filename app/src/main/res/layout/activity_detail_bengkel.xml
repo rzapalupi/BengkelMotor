@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity">
 
+
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_navigation"
         android:layout_width="wrap_content"
@@ -15,10 +17,15 @@
         app:layout_anchor="@+id/header"
         app:layout_anchorGravity="bottom|right|end"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
 
         <android.support.v7.widget.CardView
             android:id="@+id/cdvDetailBengkel"
@@ -28,6 +35,7 @@
             android:background="@android:color/white"
             app:cardCornerRadius="2dp"
             app:cardElevation="2dp">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,7 +50,7 @@
                     <ImageView
                         android:id="@+id/imgDetailBengkel"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="150dp"
                         android:src="@mipmap/ic_launcher" />
 
                     <TextView
@@ -51,6 +59,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:layout_margin="8dp"
+                        android:textSize="18dp"
                         android:text="Nama Bengkel" />
 
                 </FrameLayout>
@@ -80,8 +89,9 @@
 
         </android.support.v7.widget.CardView>
 
+
         <android.support.v7.widget.CardView
-            android:id="@+id/cdvReviewBengkel"
+            android:id="@+id/cdvMyReview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -94,31 +104,57 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <ImageView
+                    android:id="@+id/imgMyProfile"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@mipmap/ic_launcher_round" />
                 <TextView
+                    android:id="@+id/txtMyUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="REVIEW"/>
-
-                <TextView
-                    android:id="@+id/txtUsername"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Nama Profile"
+                    android:textSize="18dp" />
+                <RatingBar
+                    android:id="@+id/rtbMyRate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="Username"/>
-
+                    android:layout_gravity="center_horizontal" />
                 <TextView
-                    android:id="@+id/txtComment"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/txtMyComment"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAlignment="center"
                     android:layout_margin="8dp"
-                    android:text="Comment"/>
+                    android:text="@string/sample"/>
 
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cdvReviewBengkel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@android:color/white"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="2dp">
+
+            <ListView
+                android:id="@+id/reviewListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </ListView>
+
+        </android.support.v7.widget.CardView>
+
     </LinearLayout>
 
+    </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>
