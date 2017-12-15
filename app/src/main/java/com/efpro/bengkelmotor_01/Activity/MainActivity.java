@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements
     private DatabaseReference mBengkelRef;
     private ArrayList<Bengkel> bengkels = new ArrayList<>();
 
-    String bengkelID;
     Double latitude, longitude;
     Location location;
     LocationManager locationManager;
