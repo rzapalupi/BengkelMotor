@@ -5,26 +5,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.PopupMenu;
 import android.util.Log;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RatingBar;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.efpro.bengkelmotor_01.Adapter.ReviewAdapter;
 import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.ExpandableHeightListView;
 import com.efpro.bengkelmotor_01.R;
 import com.efpro.bengkelmotor_01.ReviewBengkel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,23 +31,18 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class DetailBengkelActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+public class DetailBengkelActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "DetailActivity";
-    ExpandableHeightListView reviewListView;
+
+    ListView reviewListView;
     ReviewAdapter reviewAdapter;
     ArrayList<ReviewBengkel> mReviewBengkels = new ArrayList<>();
     FloatingActionButton fab_navigation;
-    TextView    txtDNama, txtDAlamat, txtDJamBuka, txtDTelepon,
-                txtMyUsername, txtMyComment, txtPostDate;
-    EditText    edtReview;
-    Button  btnSubmit;
-    ImageButton btnMenuReview;
-    RatingBar rtbMyRate;
+    TextView txtDNama, txtDAlamat, txtDJamBuka, txtDTelepon;
     Intent mapIntent;
     Uri gmmIntentUri;
-    String latlong, bengkelID, reviewBengkelID, uid, username, date, comment;
-    int rate;
+    String latlong, bengkelID, reviewBengkelID;
     HashMap<String, String> hashMap;
     Map<Date, String> sortedMap = new TreeMap<Date, String>();
     DatabaseReference mReviewBengkelRef;
@@ -72,20 +57,10 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         txtDAlamat      = (TextView) findViewById(R.id.txtDAlamat);
         txtDJamBuka     = (TextView) findViewById(R.id.txtDJamBuka);
         txtDTelepon     = (TextView) findViewById(R.id.txtDTelepon);
-        txtMyUsername   = (TextView) findViewById(R.id.txtMyUsername);
-        txtMyComment    = (TextView) findViewById(R.id.txtMyComment);
-        txtPostDate     = (TextView) findViewById(R.id.txtPostDate);
-        edtReview       = (EditText) findViewById(R.id.edtReview);
-        btnSubmit       = (Button) findViewById(R.id.btnSubmit);
-        btnMenuReview   = (ImageButton) findViewById(R.id.btnMenuReview);
-        rtbMyRate       = (RatingBar) findViewById(R.id.rtbMyRate);
-        reviewListView  = (ExpandableHeightListView) findViewById(R.id.reviewListView);
-        reviewListView.setExpanded(true);
-        btnSubmit.setOnClickListener(this);
-        //btnMenuReview.setOnClickListener(this);
+        reviewListView  = (ListView) findViewById(R.id.reviewListView);
+
         fab_navigation.setOnClickListener(this);
 
-        getCurrentUserID();
         //set database review from firebase
         mReviewBengkelRef = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
         mReviewBengkelRef.keepSynced(true);
@@ -96,112 +71,15 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         txtDAlamat.setText(detailBengkel.getbAlamat());
         latlong = detailBengkel.getbLatitude() + "," + detailBengkel.getbLongitude();
         bengkelID = detailBengkel.getbID();
-        reviewAdapter = new ReviewAdapter(this, mReviewBengkels);
+        Log.e("BengkelID_First", bengkelID);
+
         getDataReview();
 
-        SortDay();
+        //set adapter to create listview
+        reviewAdapter = new ReviewAdapter(this, mReviewBengkels);
+        reviewListView.setAdapter(reviewAdapter);
+        reviewAdapter.notifyDataSetChanged();
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fab_navigation:
-                // Buat Uri dari intent string. Gunakan hasilnya untuk membuat Intent.
-                gmmIntentUri = Uri.parse("google.navigation:q=" + latlong);
-                // Buat Uri dari intent gmIntentUri. Set action => ACTION_VIEW
-                mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                // Set package Google Maps untuk tujuan aplikasi yang di Intent yaitu google maps
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(mapIntent);
-                } else {
-                    Toast.makeText(DetailBengkelActivity.this, "Google Maps Belum Terinstal. Install Terlebih dahulu.",
-                            Toast.LENGTH_LONG).show();
-                }
-            break;
-            case R.id.btnSubmit:
-                //do something
-                comment = String.valueOf(edtReview.getText());
-                rate = rtbMyRate.getNumStars();
-                SimpleDateFormat postDateFormat = new SimpleDateFormat(" dd/MM/yyyy", new Locale("in", "ID", "ID"));
-                Calendar c = Calendar.getInstance();
-                date = postDateFormat.format(c.getTime());
-                addReview(username, comment, rate,  date);
-                getDataReview();
-            break;
-        }
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        return false;
-    }
-
-    public void getDataReview() {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mReviewBengkels.clear();
-
-                //check bengkelID
-                for (DataSnapshot bengkelSnapshot : dataSnapshot.getChildren()) {
-                    reviewBengkelID = bengkelSnapshot.getKey();
-//                    Log.e("BengkelID_Second", bengkelID);
-//                    Log.e("reviewBengkelID", reviewBengkelID);
-                    //jika sama, maka akan diambil data review bengkel tersebut
-                    if(reviewBengkelID.equals(bengkelID)){
-                        for (DataSnapshot reviewSnapshot : bengkelSnapshot.getChildren()) {
-                            ReviewBengkel reviewBengkel = reviewSnapshot.getValue(ReviewBengkel.class);
-                            if (uid.equals(reviewSnapshot.getKey())) {
-                                txtMyUsername.setText(reviewBengkel.getUsername());
-                                txtPostDate.setText(reviewBengkel.getDate());
-                                rtbMyRate.setRating(reviewBengkel.getRate());
-                                txtMyComment.setText(reviewBengkel.getComment());
-
-                                txtMyUsername.setVisibility(View.VISIBLE);
-                                txtMyComment.setVisibility(View.VISIBLE);
-                                rtbMyRate.setIsIndicator(true);
-                                edtReview.setVisibility(View.GONE);
-                                btnSubmit.setVisibility(View.GONE);
-                                btnMenuReview.setVisibility(View.VISIBLE);
-                            } else {
-//                                Log.e("usernama", reviewBengkel.getUsername());
-                                mReviewBengkels.add(reviewBengkel);
-                                //set adapter to create listview
-
-                            }
-                        }
-                    }
-                }
-                reviewListView.setAdapter(reviewAdapter);
-                reviewAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled (DatabaseError databaseError){
-                Log.w(TAG, "loadNote:onCancelled", databaseError.toException());
-            }
-        };
-        mReviewBengkelRef.addValueEventListener(valueEventListener);
-    }
-
-    public void getCurrentUserID(){
-        //get profile current user
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() == null) {
-            //dont show cdvMyReview
-            CardView cdvMyReview = (CardView) findViewById(R.id.cdvMyReview);
-            cdvMyReview.setVisibility(View.GONE);
-        } else {
-            FirebaseUser user = mAuth.getCurrentUser();
-            uid = user.getUid();
-            username = user.getDisplayName();
-        }
-
-    }
-
-    public void SortDay(){
         //Sorting day
         String today;
         //format hari untuk agar bisa dijumlahkan (current day)
@@ -243,20 +121,58 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
                 txtDJamBuka.setText(tmpJamBuka);
             }
         }
+
     }
 
-    public void addReview(String username, String comment, int rate, String date){
-        ReviewBengkel rBengkel = new ReviewBengkel(username,comment,rate,date);
-        mReviewBengkelRef.child(bengkelID).child(uid).setValue(rBengkel);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab_navigation:
+                // Buat Uri dari intent string. Gunakan hasilnya untuk membuat Intent.
+                gmmIntentUri = Uri.parse("google.navigation:q=" + latlong);
+                // Buat Uri dari intent gmIntentUri. Set action => ACTION_VIEW
+                mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                // Set package Google Maps untuk tujuan aplikasi yang di Intent yaitu google maps
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(DetailBengkelActivity.this, "Google Maps Belum Terinstal. Install Terlebih dahulu.",
+                            Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
     }
 
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_review, popup.getMenu());
-        popup.show();
-        popup.setOnMenuItemClickListener(this);
-    }
+    public void getDataReview() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mReviewBengkels.clear();
 
+                //check bengkelID
+                for (DataSnapshot bengkelSnapshot : dataSnapshot.getChildren()) {
+                    reviewBengkelID = bengkelSnapshot.getKey();
+                    Log.e("BengkelID_Second", bengkelID);
+                    Log.e("reviewBengkelID", reviewBengkelID);
+                    //jika sama, maka akan diambil data review bengkel tersebut
+                    if(reviewBengkelID.equals(bengkelID)){
+                        for (DataSnapshot reviewSnapshot : bengkelSnapshot.getChildren()) {
+                            ReviewBengkel reviewBengkel = reviewSnapshot.getValue(ReviewBengkel.class);
+                            Log.e("reviewBengkelID", reviewBengkel.getUsername());
+                            mReviewBengkels.add(reviewBengkel);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled (DatabaseError databaseError){
+                Log.w(TAG, "loadNote:onCancelled", databaseError.toException());
+            }
+        };
+        mReviewBengkelRef.addValueEventListener(valueEventListener);
+
+    }
 
 }

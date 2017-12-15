@@ -75,11 +75,51 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
 
+
         mMyBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
         mMyBengkelRef.keepSynced(true);
 
-        getCurrentUser();
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
+        //get profile current user
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() == null) {
+            startActivity(new Intent(ProfileActivity.this, SignInActivity.class));
+            finish();
+        } else {
+            FirebaseUser user = mAuth.getCurrentUser();
+            uid = user.getUid();
+            name = user.getDisplayName();
+            photoUrl = user.getPhotoUrl();
+
+            txtNamaUser.setText(name);
+            Glide.with(this).asBitmap().load(photoUrl)
+                    .into(new BitmapImageViewTarget(imgProfileUser) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable rounded =
+                            RoundedBitmapDrawableFactory.create(ProfileActivity.this.getResources(), resource);
+                    rounded.setCircular(true);
+                    imgProfileUser.setImageDrawable(rounded);
+                }
+            });
+        }
+
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         getDatabase();
+
+
 
     }
 
@@ -146,40 +186,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         };
         mMyBengkelRef.addValueEventListener(valueEventListener);
 
-    }
-
-    public void getCurrentUser(){
-        //get profile current user
-        mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() == null) {
-            startActivity(new Intent(ProfileActivity.this, SignInActivity.class));
-            finish();
-        } else {
-            FirebaseUser user = mAuth.getCurrentUser();
-            uid = user.getUid();
-            name = user.getDisplayName();
-            photoUrl = user.getPhotoUrl();
-
-            txtNamaUser.setText(name);
-            Glide.with(this).asBitmap().load(photoUrl)
-                    .into(new BitmapImageViewTarget(imgProfileUser) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable rounded =
-                                    RoundedBitmapDrawableFactory.create(ProfileActivity.this.getResources(), resource);
-                            rounded.setCircular(true);
-                            imgProfileUser.setImageDrawable(rounded);
-                        }
-                    });
-        }
-
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
 
