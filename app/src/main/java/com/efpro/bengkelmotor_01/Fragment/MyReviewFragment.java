@@ -45,8 +45,8 @@ public class MyReviewFragment extends Fragment implements AdapterView.OnItemClic
 
         mMyReviews      = ((ProfileActivity)getActivity()).getMyReviews();
         mBengkels       = ((ProfileActivity)getActivity()).getTmpBengkels();
-        reviewAdapter   = new ReviewAdapter(getActivity(),mMyReviews, status);
-        //reviewAdapter = new ReviewAdapter(getActivity(),mMyReviews);
+        //reviewAdapter   = new ReviewAdapter(getActivity(),mMyReviews, status);
+        reviewAdapter   = new ReviewAdapter(getActivity(),mMyReviews, mBengkels, status);
         reviewListView.setAdapter(reviewAdapter);
         reviewAdapter.notifyDataSetChanged();
         reviewListView.setOnItemClickListener(this);

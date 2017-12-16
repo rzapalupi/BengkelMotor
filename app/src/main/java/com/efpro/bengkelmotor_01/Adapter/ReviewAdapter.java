@@ -11,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.R;
 import com.efpro.bengkelmotor_01.ReviewBengkel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,9 +28,15 @@ public class ReviewAdapter extends ArrayAdapter<ReviewBengkel> {
 //        super(context, 0, objects);
 //    }
     int status;
+    ArrayList<Bengkel> tmpBengkels;
     public ReviewAdapter(@NonNull Context context,  @NonNull List<ReviewBengkel> objects, int status) {
         super(context, 0, objects);
         this.status = status;
+    }
+    public ReviewAdapter(@NonNull Context context, @NonNull List<ReviewBengkel> objects, @NonNull ArrayList<Bengkel> tmpBengkels, int status) {
+        super(context, 0, objects );
+        this.status = status;
+        this.tmpBengkels = tmpBengkels;
     }
 
     @NonNull
@@ -54,9 +62,9 @@ public class ReviewAdapter extends ArrayAdapter<ReviewBengkel> {
 
         if(status == 1){
             imgProfile.setVisibility(View.GONE);
-            txtUsername.setVisibility(View.GONE);
+            Bengkel bengkel = tmpBengkels.get(position);
+            txtUsername.setText(bengkel.getbNama());
         }
-
 
         return convertView;
     }
