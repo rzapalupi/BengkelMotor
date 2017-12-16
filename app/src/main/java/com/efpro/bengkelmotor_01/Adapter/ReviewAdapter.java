@@ -47,6 +47,11 @@ public class ReviewAdapter extends ArrayAdapter<ReviewBengkel> {
         txtComment.setText(reviewBengkel.getComment());
         rtbUserRate.setRating(reviewBengkel.getRate());
 
+//        if(status == 1){
+//            imgProfile.setVisibility(View.GONE);
+//            txtUsername.setVisibility(View.GONE);
+//        }
+
 
         return convertView;
     }

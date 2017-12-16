@@ -23,6 +23,7 @@ import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.Fragment.MyBengkelFragment;
 import com.efpro.bengkelmotor_01.Fragment.MyReviewFragment;
 import com.efpro.bengkelmotor_01.R;
+import com.efpro.bengkelmotor_01.ReviewBengkel;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -47,15 +48,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     Button btnLogOut, btnRegBengkel;
     TextView txtNamaUser;
     ImageView imgProfileUser;
-    String uid, name;
+    String uid, name, bengkelID, namaBengkel;
     Uri photoUrl;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
     //static boolean calledAlready_fbProfileAct = false; // flag for Fragment Status
-    private DatabaseReference mMyBengkelRef;
+    private DatabaseReference mMyBengkelRef, mReviewBengkelRef;
     private ArrayList<Bengkel> myBengkels = new ArrayList<>();
+    private ArrayList<ReviewBengkel> myReviews = new ArrayList<>();
 
 
     @Override
@@ -77,49 +79,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
 
         mMyBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
+        mReviewBengkelRef = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
         mMyBengkelRef.keepSynced(true);
+        mReviewBengkelRef.keepSynced(true);
 
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
-        //get profile current user
-        mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() == null) {
-            startActivity(new Intent(ProfileActivity.this, SignInActivity.class));
-            finish();
-        } else {
-            FirebaseUser user = mAuth.getCurrentUser();
-            uid = user.getUid();
-            name = user.getDisplayName();
-            photoUrl = user.getPhotoUrl();
-
-            txtNamaUser.setText(name);
-            Glide.with(this).asBitmap().load(photoUrl)
-                    .into(new BitmapImageViewTarget(imgProfileUser) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable rounded =
-                            RoundedBitmapDrawableFactory.create(ProfileActivity.this.getResources(), resource);
-                    rounded.setCircular(true);
-                    imgProfileUser.setImageDrawable(rounded);
-                }
-            });
-        }
-
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        getDatabase();
-
-
+        getCurrentUser();
+        getDataMyBengkel();
+        getDataMyReview();
 
     }
 
@@ -164,7 +130,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         return myBengkels;
     }
 
-    public void getDatabase(){
+    public ArrayList<ReviewBengkel> getMyReviews() {
+        return myReviews;
+    }
+
+    public void getDataMyBengkel(){
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -185,8 +155,63 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         };
         mMyBengkelRef.addValueEventListener(valueEventListener);
-
     }
 
+    public void getDataMyReview(){
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                myReviews.clear();
+                for (DataSnapshot bengkelSnapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot reviewSnapshot : bengkelSnapshot.getChildren()) {
+                        ReviewBengkel reviewBengkel = reviewSnapshot.getValue(ReviewBengkel.class);
+                        if (uid.equals(reviewSnapshot.getKey())) {
+                            myReviews.add(reviewBengkel);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadNote:onCancelled", databaseError.toException());
+            }
+        };
+        mReviewBengkelRef.addValueEventListener(valueEventListener);
+    }
+
+    public void getCurrentUser(){
+        //get profile current user
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() == null) {
+            startActivity(new Intent(ProfileActivity.this, SignInActivity.class));
+            finish();
+        } else {
+            FirebaseUser user = mAuth.getCurrentUser();
+            uid = user.getUid();
+            name = user.getDisplayName();
+            photoUrl = user.getPhotoUrl();
+
+            txtNamaUser.setText(name);
+            Glide.with(this).asBitmap().load(photoUrl)
+                    .into(new BitmapImageViewTarget(imgProfileUser) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable rounded =
+                                    RoundedBitmapDrawableFactory.create(ProfileActivity.this.getResources(), resource);
+                            rounded.setCircular(true);
+                            imgProfileUser.setImageDrawable(rounded);
+                        }
+                    });
+        }
+
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+    }
 
 }

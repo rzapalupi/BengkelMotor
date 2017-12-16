@@ -38,7 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/txtUsername"
-            android:layout_below="@+id/txtUsername"/>
+            android:layout_below="@+id/txtUsername"
+            android:theme="@style/RatingBar"/>
 
         <TextView
             android:id="@+id/txtDate"

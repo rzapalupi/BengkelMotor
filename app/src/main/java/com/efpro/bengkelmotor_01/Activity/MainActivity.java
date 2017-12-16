@@ -291,8 +291,8 @@ public class MainActivity extends AppCompatActivity implements
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
                     //bengkelID = bengkelSnapshot.getKey();
-                    //bengkelID = String.valueOf(bengkelSnapshot);
-                    //Log.e(TAG,"ID: " + bengkelID);
+                    bengkelID = String.valueOf(bengkelSnapshot);
+                    Log.e(TAG,"ID: " + bengkelID);
                     if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
                             bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
                         Log.e("Nama", bengkel.getbNama());
