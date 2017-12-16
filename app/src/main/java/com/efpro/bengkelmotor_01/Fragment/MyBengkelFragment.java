@@ -39,13 +39,13 @@ public class MyBengkelFragment extends Fragment implements AdapterView.OnItemCli
         // Inflate the layout for this fragment
         mView =  inflater.inflate(R.layout.fragment_my_bengkel, container, false);
         bengkelListView = (ListView) mView.findViewById(R.id.bengkelListView);
+        bengkelListView.setOnItemClickListener(this);
 
         mMyBengkels = ((ProfileActivity)getActivity()).getMyBengkels();
         bengkelAdapter = new BengkelAdapter(getActivity(),mMyBengkels );
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();
 
-        bengkelListView.setOnItemClickListener(this);
 
         return mView;
     }
@@ -56,6 +56,15 @@ public class MyBengkelFragment extends Fragment implements AdapterView.OnItemCli
         Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
         intent.putExtra("BENGKEL",bengkel);
         startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMyBengkels = ((ProfileActivity)getActivity()).getMyBengkels();
+        bengkelAdapter = new BengkelAdapter(getActivity(),mMyBengkels );
+        bengkelListView.setAdapter(bengkelAdapter);
+        bengkelAdapter.notifyDataSetChanged();
     }
 
 }

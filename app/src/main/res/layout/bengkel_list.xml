@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/imgList"
             android:text="Nama Bengkel"
-            android:textSize="28dp" />
+            android:textSize="18dp" />
 
         <TextView
             android:id="@+id/txtAlamat"
@@ -29,8 +29,22 @@
             android:layout_below="@+id/txtNama"
             android:layout_toEndOf="@+id/imgList"
             android:text="Alamat"
-            android:textSize="24dp" />
+            android:textSize="14dp" />
 
+        <TextView
+            android:id="@+id/txtRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgList"
+            android:layout_alignBottom="@+id/imgList"
+            android:text="4.3"
+            android:textSize="18dp" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_star_black_24dp"
+            android:layout_toRightOf="@+id/txtRating"
+            android:layout_alignBottom="@+id/imgList"/>
         <TextView
             android:id="@+id/txtJarak"
             android:layout_width="wrap_content"

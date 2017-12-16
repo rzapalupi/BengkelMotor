@@ -174,7 +174,6 @@ public class MapFragment extends Fragment
 
                 cdvBengkelBottom.setVisibility(View.VISIBLE);
 
-
             }
         }
         return false;

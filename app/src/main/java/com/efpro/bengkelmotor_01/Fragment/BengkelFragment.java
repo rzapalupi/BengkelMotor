@@ -45,13 +45,13 @@ public class BengkelFragment extends Fragment implements View.OnClickListener, A
         bengkelListView = (ListView) mView.findViewById(R.id.bengkelListView);
         fab_bengkel = (FloatingActionButton) mView.findViewById(R.id.fab_bengkel);
         fab_bengkel.setOnClickListener(this);
+        bengkelListView.setOnItemClickListener(this);
 
         mBengkels = ((MainActivity)getActivity()).getBengkelList();
         bengkelAdapter = new BengkelAdapter(getActivity(),mBengkels );
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();
 
-        bengkelListView.setOnItemClickListener(this);
 
         return mView;
     }
@@ -74,5 +74,14 @@ public class BengkelFragment extends Fragment implements View.OnClickListener, A
         Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
         intent.putExtra("BENGKEL",bengkel);
         startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mBengkels = ((MainActivity)getActivity()).getBengkelList();
+        bengkelAdapter = new BengkelAdapter(getActivity(),mBengkels );
+        bengkelListView.setAdapter(bengkelAdapter);
+        bengkelAdapter.notifyDataSetChanged();
     }
 }

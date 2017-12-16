@@ -17,11 +17,16 @@ public class Bengkel implements Parcelable {
     private double bLatitude;
     private double bLongitude;
     private double bJarak;
+    private double bRate;
     private HashMap<String, String> bJamBuka;
     private String bUid;
     private String bID;
 
-    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude,  HashMap<String, String> bJamBuka, String bUid, String bID) {
+    public  Bengkel(){
+
+    }
+
+    public Bengkel(String bNama, String bAlamat, String bTelepon, double bLatitude, double bLongitude, HashMap<String, String> bJamBuka, String bUid, String bID) {
         this.bNama = bNama;
         this.bAlamat = bAlamat;
         this.bTelepon = bTelepon;
@@ -80,6 +85,14 @@ public class Bengkel implements Parcelable {
         this.bJarak = bJarak;
     }
 
+    public double getbRate() {
+        return bRate;
+    }
+
+    public void setbRate(double bRate) {
+        this.bRate = bRate;
+    }
+
     public HashMap<String, String> getbJamBuka() {
         return bJamBuka;
     }
@@ -104,10 +117,6 @@ public class Bengkel implements Parcelable {
         this.bID = bID;
     }
 
-    public Bengkel() {
-    }
-
-
     @Override
     public int describeContents() {
         return 0;
@@ -121,6 +130,7 @@ public class Bengkel implements Parcelable {
         dest.writeDouble(this.bLatitude);
         dest.writeDouble(this.bLongitude);
         dest.writeDouble(this.bJarak);
+        dest.writeDouble(this.bRate);
         dest.writeSerializable(this.bJamBuka);
         dest.writeString(this.bUid);
         dest.writeString(this.bID);
@@ -133,6 +143,7 @@ public class Bengkel implements Parcelable {
         this.bLatitude = in.readDouble();
         this.bLongitude = in.readDouble();
         this.bJarak = in.readDouble();
+        this.bRate = in.readDouble();
         this.bJamBuka = (HashMap<String, String>) in.readSerializable();
         this.bUid = in.readString();
         this.bID = in.readString();

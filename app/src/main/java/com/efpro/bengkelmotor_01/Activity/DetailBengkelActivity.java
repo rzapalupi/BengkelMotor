@@ -49,7 +49,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     ArrayList<ReviewBengkel> mReviewBengkels = new ArrayList<>();
     FloatingActionButton fab_navigation;
     TextView    txtDNama, txtDAlamat, txtDJamBuka, txtDTelepon,
-            txtMyUsername, txtMyComment, txtPostDate;
+                txtMyUsername, txtMyComment, txtPostDate;
     EditText    edtReview;
     Button  btnSubmit;
     ImageButton btnMenuReview;
@@ -57,10 +57,11 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     Intent mapIntent;
     Uri gmmIntentUri;
     String latlong, namaBengkel, bengkelID, reviewBengkelID, uid, username, date, comment;
-    int rate;
+    int rate, div ;
+    double sumRate = 0;
     HashMap<String, String> hashMap;
     Map<Date, String> sortedMap = new TreeMap<Date, String>();
-    DatabaseReference mReviewBengkelRef;
+    DatabaseReference mReviewBengkelRef, mBengkelRef;
     boolean alreadyReview = false;
     int status = 0;
 
@@ -90,7 +91,9 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
 
         //set database review from firebase
         mReviewBengkelRef = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
+        mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
         mReviewBengkelRef.keepSynced(true);
+        mBengkelRef.keepSynced(true);
 
         Bengkel detailBengkel = getIntent().getParcelableExtra("BENGKEL");
         hashMap = detailBengkel.getbJamBuka();
@@ -151,6 +154,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
             case R.id.menu_delete:
                 alreadyReview = false;
                 mReviewBengkelRef.child(bengkelID).child(uid).removeValue();
+                getDataReview();
                 edtReview.setText("");
                 rtbMyRate.setRating(0);
                 updateUI();
@@ -169,10 +173,10 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
                 //check bengkelID
                 for (DataSnapshot bengkelSnapshot : dataSnapshot.getChildren()) {
                     reviewBengkelID = bengkelSnapshot.getKey();
-//                    Log.e("BengkelID_Second", bengkelID);
-//                    Log.e("reviewBengkelID", reviewBengkelID);
                     //jika sama, maka akan diambil data review bengkel tersebut
                     if(reviewBengkelID.equals(bengkelID)){
+                        div = 0;
+                        sumRate = 0;
                         for (DataSnapshot reviewSnapshot : bengkelSnapshot.getChildren()) {
                             ReviewBengkel reviewBengkel = reviewSnapshot.getValue(ReviewBengkel.class);
                             if (uid.equals(reviewSnapshot.getKey())) {
@@ -185,14 +189,16 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
                                 updateUI();
 
                             } else {
-//                                Log.e("usernama", reviewBengkel.getUsername());
                                 mReviewBengkels.add(reviewBengkel);
                                 //set adapter to create listview
-
                             }
+                            sumRate = sumRate + reviewBengkel.getRate();
+                            div++;
                         }
+                        sumRate = sumRate/div; //menghitung total rating
                     }
                 }
+                mBengkelRef.child(bengkelID).child("bRate").setValue(sumRate);
                 reviewListView.setAdapter(reviewAdapter);
                 reviewAdapter.notifyDataSetChanged();
             }

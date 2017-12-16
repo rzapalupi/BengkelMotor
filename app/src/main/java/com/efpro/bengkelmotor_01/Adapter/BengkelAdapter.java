@@ -40,15 +40,17 @@ public class BengkelAdapter extends ArrayAdapter<Bengkel> {
         TextView txtNama    = (TextView) convertView.findViewById(R.id.txtNama);
         TextView txtAlamat  = (TextView) convertView.findViewById(R.id.txtAlamat);
         TextView txtJarak   = (TextView) convertView.findViewById(R.id.txtJarak);
+        TextView txtRating   = (TextView) convertView.findViewById(R.id.txtRating);
 
         Bengkel bengkel = getItem(position);
         txtNama.setText(bengkel.getbNama());
         txtAlamat.setText(bengkel.getbAlamat());
+        txtRating.setText(String.format("%.1f",bengkel.getbRate()));
 
         if(bengkel.getbJarak() == 0){
             txtJarak.setVisibility(View.GONE);
         } else{
-            txtJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
+            txtJarak.setText(String.format("%.2f",bengkel.getbJarak()) + " Km");
         }
 
 
