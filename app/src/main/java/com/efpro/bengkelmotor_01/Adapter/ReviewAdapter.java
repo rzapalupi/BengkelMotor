@@ -22,8 +22,13 @@ import java.util.List;
 
 public class ReviewAdapter extends ArrayAdapter<ReviewBengkel> {
 
-    public ReviewAdapter(@NonNull Context context,  @NonNull List<ReviewBengkel> objects) {
+//    public ReviewAdapter(@NonNull Context context,  @NonNull List<ReviewBengkel> objects) {
+//        super(context, 0, objects);
+//    }
+    int status;
+    public ReviewAdapter(@NonNull Context context,  @NonNull List<ReviewBengkel> objects, int status) {
         super(context, 0, objects);
+        this.status = status;
     }
 
     @NonNull
@@ -47,10 +52,10 @@ public class ReviewAdapter extends ArrayAdapter<ReviewBengkel> {
         txtComment.setText(reviewBengkel.getComment());
         rtbUserRate.setRating(reviewBengkel.getRate());
 
-//        if(status == 1){
-//            imgProfile.setVisibility(View.GONE);
-//            txtUsername.setVisibility(View.GONE);
-//        }
+        if(status == 1){
+            imgProfile.setVisibility(View.GONE);
+            txtUsername.setVisibility(View.GONE);
+        }
 
 
         return convertView;

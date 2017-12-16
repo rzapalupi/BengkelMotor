@@ -84,7 +84,6 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         reviewListView  = (ExpandableHeightListView) findViewById(R.id.reviewListView);
         reviewListView.setExpanded(true);
         btnSubmit.setOnClickListener(this);
-        //btnMenuReview.setOnClickListener(this);
         fab_navigation.setOnClickListener(this);
 
         getCurrentUserID();
@@ -100,8 +99,8 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         latlong = detailBengkel.getbLatitude() + "," + detailBengkel.getbLongitude();
         bengkelID = detailBengkel.getbID();
         namaBengkel = detailBengkel.getbNama();
-//        reviewAdapter = new ReviewAdapter(this, mReviewBengkels, status);
-        reviewAdapter = new ReviewAdapter(this, mReviewBengkels);
+        reviewAdapter = new ReviewAdapter(this, mReviewBengkels, status);
+//        reviewAdapter = new ReviewAdapter(this, mReviewBengkels);
         getDataReview();
 
         SortDay();

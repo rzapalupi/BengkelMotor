@@ -57,7 +57,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     //static boolean calledAlready_fbProfileAct = false; // flag for Fragment Status
     private DatabaseReference mMyBengkelRef, mReviewBengkelRef;
     private ArrayList<Bengkel> myBengkels = new ArrayList<>();
+    private ArrayList<Bengkel> tmpBengkels = new ArrayList<>();
     private ArrayList<ReviewBengkel> myReviews = new ArrayList<>();
+    private ArrayList<String> tmpBengkelID = new ArrayList<String>();
 
 
     @Override
@@ -84,8 +86,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mReviewBengkelRef.keepSynced(true);
 
         getCurrentUser();
-        getDataMyBengkel();
         getDataMyReview();
+        getDataMyBengkel();
 
     }
 
@@ -130,6 +132,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         return myBengkels;
     }
 
+    public ArrayList<Bengkel> getTmpBengkels() {
+        return tmpBengkels;
+    }
+
     public ArrayList<ReviewBengkel> getMyReviews() {
         return myReviews;
     }
@@ -139,13 +145,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 myBengkels.clear();
-
+                int i = 0;
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
-
                     if(bengkel.getbUid().equals(uid)) {
                         myBengkels.add(bengkel);
                     }
+                    if(tmpBengkelID.get(i).equals(bengkelSnapshot.getKey())){
+                        tmpBengkels.add(bengkel);
+                        if (i < (tmpBengkelID.size()-1)){
+                            i++;
+                        }
+                    }
+
                 }
             }
 
@@ -162,11 +174,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 myReviews.clear();
+                int x = 0;
                 for (DataSnapshot bengkelSnapshot : dataSnapshot.getChildren()) {
                     for (DataSnapshot reviewSnapshot : bengkelSnapshot.getChildren()) {
                         ReviewBengkel reviewBengkel = reviewSnapshot.getValue(ReviewBengkel.class);
                         if (uid.equals(reviewSnapshot.getKey())) {
                             myReviews.add(reviewBengkel);
+                            tmpBengkelID.add(bengkelSnapshot.getKey());
+                            Log.e( "onDataChange: ",tmpBengkelID.get(x) );
+                            x++;
                         }
                     }
                 }

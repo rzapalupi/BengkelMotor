@@ -1,6 +1,7 @@
 package com.efpro.bengkelmotor_01.Fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.ProfileActivity;
 import com.efpro.bengkelmotor_01.Adapter.ReviewAdapter;
+import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.R;
 import com.efpro.bengkelmotor_01.ReviewBengkel;
 
@@ -24,7 +27,9 @@ public class MyReviewFragment extends Fragment implements AdapterView.OnItemClic
     ListView reviewListView;
     ReviewAdapter reviewAdapter;
     ArrayList<ReviewBengkel> mMyReviews;
+    ArrayList<Bengkel> mBengkels;
     View mView;
+    int status = 1;
 
     public MyReviewFragment() {
         // Required empty public constructor
@@ -38,9 +43,10 @@ public class MyReviewFragment extends Fragment implements AdapterView.OnItemClic
         mView =  inflater.inflate(R.layout.fragment_my_review, container, false);
         reviewListView = (ListView) mView.findViewById(R.id.reviewListView);
 
-        mMyReviews = ((ProfileActivity)getActivity()).getMyReviews();
-//        reviewAdapter = new ReviewAdapter(getActivity(),mMyReviews, status);
-        reviewAdapter = new ReviewAdapter(getActivity(),mMyReviews);
+        mMyReviews      = ((ProfileActivity)getActivity()).getMyReviews();
+        mBengkels       = ((ProfileActivity)getActivity()).getTmpBengkels();
+        reviewAdapter   = new ReviewAdapter(getActivity(),mMyReviews, status);
+        //reviewAdapter = new ReviewAdapter(getActivity(),mMyReviews);
         reviewListView.setAdapter(reviewAdapter);
         reviewAdapter.notifyDataSetChanged();
         reviewListView.setOnItemClickListener(this);
@@ -50,9 +56,9 @@ public class MyReviewFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Bengkel bengkel = mMyBengkels.get(position);
-//        Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
-//        intent.putExtra("BENGKEL",bengkel);
-//        startActivity(intent);
+        Bengkel bengkel = mBengkels.get(position);
+        Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
+        intent.putExtra("BENGKEL",bengkel);
+        startActivity(intent);
     }
 }
