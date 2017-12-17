@@ -4,22 +4,22 @@
 
 
     <item
-        android:title="Register Bengkel"
+        android:title="@string/registrasi_bengkel"
         android:id="@+id/menu_regbengkel"
         app:showAsAction="never"
         android:visible="false"/>
     <item
-        android:title="Tips"
+        android:title="@string/tips"
         android:id="@+id/menu_tips"
         app:showAsAction="never"/>
     <item
-        android:title="About"
+        android:title="@string/about"
         android:id="@+id/menu_about"
         app:showAsAction="never"/>
     <item
         android:id="@+id/menu_profile"
         android:icon="@drawable/ic_person_black_24dp"
         android:title=""
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 </menu>

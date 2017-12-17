@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/txtTAlamat"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:text="KM"/>
 
         </RelativeLayout>
@@ -99,27 +99,27 @@
                 android:id="@+id/txtBNama"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/imgBengkel"
+                android:layout_toEndOf="@+id/imgBengkel"
                 android:text="Nama Bengkel"
-                android:textSize="28dp" />
+                android:textSize="28sp" />
 
             <TextView
                 android:id="@+id/txtBAlamat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtBNama"
-                android:layout_toRightOf="@+id/imgBengkel"
+                android:layout_toEndOf="@+id/imgBengkel"
                 android:text="Alamat"
-                android:textSize="24dp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/txtBJarak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignBottom="@+id/imgBengkel"
                 android:text="Jarak"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
         </RelativeLayout>
 

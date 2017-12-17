@@ -33,13 +33,14 @@
                     android:layout_width="0dp"
                     android:layout_weight="4"
                     android:layout_height="wrap_content"
-                    android:text="NAMA BENGKEL" />
+                    android:textAllCaps="true"
+                    android:text="@string/nama_bengkel" />
                 <EditText
                     android:id="@+id/edtNamaBengkel"
                     android:layout_width="0dp"
                     android:layout_weight="7"
                     android:layout_height="wrap_content"
-                    android:hint="Nama Bengkel"/>
+                    android:hint="@string/nama_bengkel"/>
 
             </LinearLayout>
 
@@ -52,13 +53,14 @@
                     android:layout_width="0dp"
                     android:layout_weight="4"
                     android:layout_height="wrap_content"
-                    android:text="ALAMAT" />
+                    android:textAllCaps="true"
+                    android:text="@string/alamat" />
                 <EditText
                     android:id="@+id/edtAlamat"
                     android:layout_width="0dp"
                     android:layout_weight="7"
                     android:layout_height="wrap_content"
-                    android:hint="Alamat Bengkel"/>
+                    android:hint="@string/alamat_bengkel"/>
             </LinearLayout>
 
             <LinearLayout
@@ -70,13 +72,14 @@
                     android:layout_width="0dp"
                     android:layout_weight="4"
                     android:layout_height="wrap_content"
-                    android:text="TELEPON" />
+                    android:textAllCaps="true"
+                    android:text="@string/telepon" />
                 <EditText
                     android:id="@+id/edtTelepon"
                     android:layout_width="0dp"
                     android:layout_weight="7"
                     android:layout_height="wrap_content"
-                    android:hint="No Telepon Bengkel"/>
+                    android:hint="@string/no_telepon_bengkel"/>
             </LinearLayout>
 
 
@@ -89,7 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_gravity="center_horizontal"
-            android:text="JAM BUKA" />
+            android:textAllCaps="true"
+            android:text="@string/jam_buka" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,7 +116,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:layout_gravity="center"
-                        android:text="Senin" />
+                        android:text="@string/senin" />
 
                     <EditText
                         android:id="@+id/edtStartH1"
@@ -122,7 +126,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Buka"
+                        android:hint="@string/jam_buka"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -132,7 +136,7 @@
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="-" />
+                        android:text="@string/strip" />
 
                     <EditText
                         android:id="@+id/edtEndH1"
@@ -142,7 +146,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Tutup"
+                        android:hint="@string/jam_tutup"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -164,7 +168,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:layout_gravity="center"
-                        android:text="Selasa" />
+                        android:text="@string/selasa" />
 
                     <EditText
                         android:id="@+id/edtStartH2"
@@ -174,7 +178,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Buka"
+                        android:hint="@string/jam_buka"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -184,7 +188,7 @@
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="-" />
+                        android:text="@string/strip" />
 
                     <EditText
                         android:id="@+id/edtEndH2"
@@ -194,7 +198,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Tutup"
+                        android:hint="@string/jam_tutup"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -216,7 +220,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:layout_gravity="center"
-                        android:text="Rabu" />
+                        android:text="@string/rabu" />
 
                     <EditText
                         android:id="@+id/edtStartH3"
@@ -226,7 +230,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Buka"
+                        android:hint="@string/jam_buka"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -236,7 +240,7 @@
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="-" />
+                        android:text="@string/strip" />
 
                     <EditText
                         android:id="@+id/edtEndH3"
@@ -246,7 +250,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Tutup"
+                        android:hint="@string/jam_tutup"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -268,7 +272,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:layout_gravity="center"
-                        android:text="Kamis" />
+                        android:text="@string/kamis" />
 
                     <EditText
                         android:id="@+id/edtStartH4"
@@ -278,7 +282,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Buka"
+                        android:hint="@string/jam_buka"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -288,7 +292,7 @@
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="-" />
+                        android:text="@string/strip" />
 
                     <EditText
                         android:id="@+id/edtEndH4"
@@ -298,7 +302,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Tutup"
+                        android:hint="@string/jam_tutup"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -320,7 +324,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:layout_gravity="center"
-                        android:text="Jumat" />
+                        android:text="@string/jumat" />
 
                     <EditText
                         android:id="@+id/edtStartH5"
@@ -330,7 +334,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Buka"
+                        android:hint="@string/jam_buka"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -340,7 +344,7 @@
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="-" />
+                        android:text="@string/strip" />
 
                     <EditText
                         android:id="@+id/edtEndH5"
@@ -350,7 +354,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Tutup"
+                        android:hint="@string/jam_tutup"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -372,7 +376,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:layout_gravity="center"
-                        android:text="Sabtu" />
+                        android:text="@string/sabtu" />
 
                     <EditText
                         android:id="@+id/edtStartH6"
@@ -382,7 +386,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Buka"
+                        android:hint="@string/jam_buka"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -392,7 +396,7 @@
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="-" />
+                        android:text="@string/strip" />
 
                     <EditText
                         android:id="@+id/edtEndH6"
@@ -402,7 +406,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Tutup"
+                        android:hint="@string/jam_tutup"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -424,7 +428,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:layout_gravity="center"
-                        android:text="Minggu" />
+                        android:text="@string/minggu" />
 
                     <EditText
                         android:id="@+id/edtStartH7"
@@ -434,7 +438,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Buka"
+                        android:hint="@string/jam_buka"
                         android:textAlignment="center"
                         android:enabled="false"/>
 
@@ -444,7 +448,7 @@
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="-" />
+                        android:text="@string/strip" />
 
                     <EditText
                         android:id="@+id/edtEndH7"
@@ -454,7 +458,7 @@
                         android:editable="false"
                         android:focusable="false"
                         android:textSize="12sp"
-                        android:hint="Jam Tutup"
+                        android:hint="@string/jam_tutup"
                         android:textAlignment="center"
                         android:enabled="false"
                         />
@@ -470,7 +474,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="8dp"
-            android:text="SET LOKASI"/>
+            android:text="@string/set_lokasi"/>
 
         <ImageView
             android:id="@+id/imgSnapMap"
@@ -488,7 +492,7 @@
         android:id="@+id/btnAddBengkel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ADD BENGKEL"
+        android:text="@string/add_bengkel"
         android:layout_alignParentBottom="true"
         />
 

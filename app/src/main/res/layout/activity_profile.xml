@@ -25,18 +25,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Nama Profile"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
         <Button
             android:id="@+id/btnLogOut"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LOGOUT"/>
+            android:text="@string/logout"/>
         <Button
             android:id="@+id/btnRegBengkel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="REGISTRASI BENGKEL"/>
+            android:text="@string/registrasi_bengkel"/>
 
 
         <android.support.design.widget.AppBarLayout

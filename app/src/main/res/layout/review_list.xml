@@ -29,8 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:text="Username" />
+            android:layout_marginStart="8dp"/>
 
         <RatingBar
             android:id="@+id/rtbUserRate"
@@ -48,9 +47,8 @@
             android:layout_alignBottom="@+id/rtbUserRate"
             android:layout_alignTop="@+id/rtbUserRate"
             android:layout_toEndOf="@+id/rtbUserRate"
-            android:layout_marginLeft="8dp"
-            android:textSize="12sp"
-            android:text="29/06/2018"/>
+            android:layout_marginStart="8dp"
+            android:textSize="12sp" />
 
 
         <TextView
