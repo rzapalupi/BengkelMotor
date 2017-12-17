@@ -86,8 +86,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mReviewBengkelRef.keepSynced(true);
 
         getCurrentUser();
-        getDataMyReview();
-        getDataMyBengkel();
+
 
     }
 
@@ -151,7 +150,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     if(bengkel.getbUid().equals(uid)) {
                         myBengkels.add(bengkel);
                     }
-                    if(tmpBengkelID.get(i).equals(bengkelSnapshot.getKey())){
+                    if(tmpBengkelID.size() == 0){
+                        //do nothing
+                    }else if (tmpBengkelID.get(i).equals(bengkelSnapshot.getKey())){
                         tmpBengkels.add(bengkel);
                         if (i < (tmpBengkelID.size()-1)){
                             i++;
@@ -218,6 +219,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             imgProfileUser.setImageDrawable(rounded);
                         }
                     });
+
+            getDataMyReview();
+            getDataMyBengkel();
         }
 
         // Configure Google Sign In
@@ -227,6 +231,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 .build();
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
     }
 
 }

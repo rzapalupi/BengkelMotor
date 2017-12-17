@@ -1,8 +1,17 @@
 package com.efpro.bengkelmotor_01.Activity;
 
+import android.Manifest;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +26,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.PermissionUtils;
 import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -28,6 +38,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,20 +51,24 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
 
     private static final String TAG = "AddBengkelActivity";
     private static final String setError = "Tidak boleh kosong";
-    int PLACE_PICKER_REQUEST = 1;
+    private static final int READ_EXTERNAL_STORAGE_REQUEST_CODE = 123;
+    int reqCode;
+    int PLACE_PICKER_REQUEST = 5;
     Button btnSetLokasi, btnAddBengkel;
     EditText edtNamaBengkel, edtAlamat, edtTelepon;
     EditText edtStartH1, edtStartH2, edtStartH3, edtStartH4, edtStartH5, edtStartH6, edtStartH7;
     EditText edtEndH1, edtEndH2, edtEndH3, edtEndH4, edtEndH5, edtEndH6, edtEndH7;
     CheckBox cbH1, cbH2, cbH3, cbH4, cbH5, cbH6, cbH7;
     TextView tJamBuka, tSenin, tSelasa, tRabu, tKamis, tJumat, tSabtu, tMinggu;
-    ImageView imgSnapMap;
+    ImageView imgSnapMap, imgFoto1, imgFoto2, imgFoto3;
     String nama, alamat, telepon, uid;
     RelativeLayout ly;
     double latitude, longitude;
     HashMap<String, String> jambuka = new HashMap<>();
     boolean flagSetTime = false;
     boolean lokasi = false;
+    boolean pic = false;
+    boolean result = false;
 
     private DatabaseReference mBengkelRef;
     private FirebaseUser user;
@@ -95,6 +114,9 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         edtEndH7        = (EditText) findViewById(R.id.edtEndH7);
 
         imgSnapMap      = (ImageView) findViewById(R.id.imgSnapMap);
+        imgFoto1        = (ImageView) findViewById(R.id.imgFoto1);
+        imgFoto2        = (ImageView) findViewById(R.id.imgFoto2);
+        imgFoto3        = (ImageView) findViewById(R.id.imgFoto3);
         ly              = (RelativeLayout) findViewById(R.id.addbengkelLayout);
 
 
@@ -120,8 +142,6 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
 
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
         user = FirebaseAuth.getInstance().getCurrentUser();
-
-
 
     }
 
@@ -166,6 +186,9 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                     }
                     Log.e(TAG, String.valueOf(jambuka));
                     addBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid);
+                    // TODO: 12/17/2017 add photo
+                    //
+                    //
                     Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
                     Intent intentProfile = new Intent(this, ProfileActivity.class);
                     startActivity(intentProfile);
@@ -343,11 +366,33 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 btnSetLokasi.setError(null);
             }
             int layWidth = ly.getWidth();
-            Log.e(TAG, "onActivityResult: "+ layWidth );
             String url = "https://maps.googleapis.com/maps/api/staticmap?markers="
-                    +latitude+ "," +longitude+ "&zoom=17&size=" +layWidth+ "x250";
+                    + latitude + "," + longitude + "&zoom=17&size=" + layWidth + "x250";
             Glide.with(this).load(url).into(imgSnapMap);
-
+        } else if (reqCode == 1){
+            if (resultCode == RESULT_OK) {
+                if(pic){
+                    onSelectFromGalleryResult(data, imgFoto1);
+                }else{
+                    onCaptureImageResult(data, imgFoto1);
+                }
+            }
+        } else if (reqCode == 2){
+            if (resultCode == RESULT_OK) {
+                if(pic){
+                    onSelectFromGalleryResult(data, imgFoto2);
+                }else{
+                    onCaptureImageResult(data, imgFoto2);
+                }
+            }
+        } else if (reqCode == 3){
+            if (resultCode == RESULT_OK) {
+                if(pic){
+                    onSelectFromGalleryResult(data, imgFoto3);
+                }else{
+                    onCaptureImageResult(data, imgFoto3);
+                }
+            }
         }
     }
 
@@ -485,6 +530,122 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
             check = true;;
         }
         return check;
+    }
+
+    public void addPhoto(View view) {
+       String resourceName = getResources().getResourceEntryName(view.getId());
+        if (resourceName.equals("imgFoto1")){
+            reqCode = 1;
+        } else if (resourceName.equals("imgFoto2")){
+            reqCode = 2;
+        } else if (resourceName.equals("imgFoto3")){
+            reqCode = 3;
+        }
+
+        final CharSequence[] items = { "Take Photo", "Choose from Library" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddBengkelActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                result = checkPermission();
+                if (items[item].equals("Take Photo")) {
+                    pic = false;
+                    if(result) {
+                        cameraIntent();
+                    }
+                } else if (items[item].equals("Choose from Library")) {
+                    pic = true;
+                    if(result) {
+                        galerryIntent();
+                    }
+                } else {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void onCaptureImageResult(Intent data, ImageView imageView) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+
+        File destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        imageView.setImageBitmap(thumbnail);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data, ImageView imageView) {
+
+        Bitmap bm = null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        imageView.setImageBitmap(bm);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == READ_EXTERNAL_STORAGE_REQUEST_CODE) {
+            if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                if(pic){
+                    galerryIntent();
+                } else{
+                    cameraIntent();
+                }
+            } else {
+//                // Display the missing permission error dialog when the fragments resume.
+            }
+        }else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    public boolean checkPermission() {
+        //mengecek status permission yang kita request
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            //jika belum diberi permission, maka minta persmission
+            PermissionUtils.requestPermission2(this, READ_EXTERNAL_STORAGE_REQUEST_CODE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE, true);
+        } else  {
+            return true;
+        }
+        return false;
+    }
+
+    public void galerryIntent(){
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, reqCode);
+    }
+
+    public void cameraIntent() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, reqCode);
     }
 
 }
