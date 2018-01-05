@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,7 +23,6 @@
         android:id="@+id/appbar"
         android:theme="@style/NoActionBar">
 
-
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:id="@+id/ctolbar"
@@ -33,16 +33,35 @@
             android:layout_height="match_parent"
             android:theme="@style/NoActionBar">
 
-            <ImageView
+            <LinearLayout
+                android:id="@+id/layout_top"
                 android:layout_width="match_parent"
-                android:contentDescription="@string/app_name"
-                android:fitsSystemWindows="true"
-                android:id="@+id/imgDetailBengkel"
-                app:srcCompat="@mipmap/ic_launcher"
-                android:background="@color/colorPrimary"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                android:layout_height="200dp" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.efpro.bengkelmotor_01.SliderView
+                        android:id="@+id/sliderView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/pagesContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"/>
+
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
@@ -57,6 +76,9 @@
                 app:popupTheme="@style/AppTheme"/>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
+
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

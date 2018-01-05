@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +32,15 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.efpro.bengkelmotor_01.Adapter.ReviewAdapter;
+import com.efpro.bengkelmotor_01.Adapter.SliderPagerAdapter;
 import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.ExpandableHeightListView;
 import com.efpro.bengkelmotor_01.Foto;
+import com.efpro.bengkelmotor_01.Fragment.SliderFragment;
 import com.efpro.bengkelmotor_01.R;
 import com.efpro.bengkelmotor_01.ReviewBengkel;
+import com.efpro.bengkelmotor_01.SliderIndicator;
+import com.efpro.bengkelmotor_01.SliderView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -67,7 +74,8 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     TextView    txtDAlamat, txtDHari, txtDJam, txtDToday, txtDHour, txtDTelepon,
                 txtMyUsername, txtMyComment, txtPostDate;
     EditText    edtReview;
-    ImageView imgMyProfile,imgDetailBengkel;
+    ImageView imgMyProfile;
+//    imgDetailBengkel;
     Button  btnSubmit;
     ImageButton btnMenuReview;
     RatingBar rtbMyRate;
@@ -76,7 +84,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     Toolbar toolbar;
     Intent mapIntent;
     Uri gmmIntentUri, photoUrl;
-    String latlong, bengkelID, reviewBengkelID, uid, username, date, comment, sPhotoUrl;
+    String latlong, bengkelID, namabengkel, reviewBengkelID, uid, username, date, comment, sPhotoUrl;
     int rate, div ;
     double sumRate = 0;
     HashMap<String, String> hashMap;
@@ -87,6 +95,13 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     boolean alreadyReview = false;
     boolean ExpandedActionBar = true;
     int status = 0;
+
+    //slider
+    private SliderPagerAdapter mAdapter;
+    private SliderIndicator mIndicator;
+
+    private SliderView sliderView;
+    private LinearLayout mLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,13 +121,17 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         edtReview           = (EditText) findViewById(R.id.edtReview);
         btnSubmit           = (Button) findViewById(R.id.btnSubmit);
         imgMyProfile        = (ImageView) findViewById(R.id.imgMyProfile);
-        imgDetailBengkel    = (ImageView) findViewById(R.id.imgDetailBengkel);
+//        imgDetailBengkel    = (ImageView) findViewById(R.id.imgDetailBengkel);
         btnMenuReview       = (ImageButton) findViewById(R.id.btnMenuReview);
         rtbMyRate           = (RatingBar) findViewById(R.id.rtbMyRate);
         reviewListView      = (ExpandableHeightListView) findViewById(R.id.reviewListView);
         Appbar              = (AppBarLayout)findViewById(R.id.appbar);
         CoolToolbar         = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
         toolbar             = (Toolbar) findViewById(R.id.toolbar);
+
+        //slider
+        sliderView = (SliderView) findViewById(R.id.sliderView);
+        mLinearLayout = (LinearLayout) findViewById(R.id.pagesContainer);
 
         setSupportActionBar(toolbar);
         reviewListView.setExpanded(true);
@@ -133,6 +152,8 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         txtDAlamat.setText(detailBengkel.getbAlamat());
         latlong = detailBengkel.getbLatitude() + "," + detailBengkel.getbLongitude();
         bengkelID = detailBengkel.getbID();
+        namabengkel = detailBengkel.getbNama();
+
         CoolToolbar.setTitle(detailBengkel.getbNama());
         CoolToolbar.setCollapsedTitleTextColor(Color.WHITE);
         CoolToolbar.setExpandedTitleColor(Color.WHITE);
@@ -145,6 +166,8 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         getDataReview();
 
         SortDay();
+
+        setupSlider();
 
         Appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -394,6 +417,24 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
             btnMenuReview.setVisibility(View.GONE);
             txtPostDate.setText("Nilai bengkel ini");
         }
+    }
+
+//    public String getNamaBengkel(){
+//        return namabengkel;
+//    }
+    private void setupSlider() {
+        sliderView.setDurationScroll(800);
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(SliderFragment.newInstance("http://www.menucool.com/slider/prod/image-slider-1.jpg"));
+        fragments.add(SliderFragment.newInstance("http://www.menucool.com/slider/prod/image-slider-2.jpg"));
+        fragments.add(SliderFragment.newInstance("http://www.menucool.com/slider/prod/image-slider-3.jpg"));
+        fragments.add(SliderFragment.newInstance("http://www.menucool.com/slider/prod/image-slider-4.jpg"));
+
+        mAdapter = new SliderPagerAdapter(getSupportFragmentManager(), fragments);
+        sliderView.setAdapter(mAdapter);
+        mIndicator = new SliderIndicator(this, mLinearLayout, sliderView, R.drawable.indicator_circle);
+        mIndicator.setPageCount(fragments.size());
+        mIndicator.show();
     }
 
 
