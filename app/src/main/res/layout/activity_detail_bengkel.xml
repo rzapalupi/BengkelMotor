@@ -6,21 +6,63 @@
     android:layout_height="match_parent"
     tools:context="com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity">
 
-
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_navigation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
-        app:layout_anchor="@+id/header"
+        app:layout_anchor="@+id/ctolbar"
         app:layout_anchorGravity="bottom|right|end"/>
 
-    <ScrollView
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:id="@+id/appbar"
+        android:theme="@style/NoActionBar">
 
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:id="@+id/ctolbar"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMargin="5dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            android:layout_height="match_parent"
+            android:theme="@style/NoActionBar">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:contentDescription="@string/app_name"
+                android:fitsSystemWindows="true"
+                android:id="@+id/imgDetailBengkel"
+                app:srcCompat="@mipmap/ic_launcher"
+                android:background="@color/colorPrimary"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                android:layout_height="200dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/scrim"  />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme"/>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/nested"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,7 +70,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
-
+            <!--//body-->
             <android.support.v7.widget.CardView
                 android:id="@+id/cdvDetailBengkel"
                 android:layout_width="match_parent"
@@ -44,28 +86,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <FrameLayout
-                        android:id="@+id/header"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:id="@+id/imgDetailBengkel"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:src="@mipmap/ic_launcher" />
-
-                        <TextView
-                            android:id="@+id/txtDNama"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_margin="8dp"
-                            android:textSize="18sp"
-                            android:text="Nama Bengkel" />
-
-                    </FrameLayout>
-
                     <TextView
                         android:id="@+id/txtDAlamat"
                         android:layout_width="match_parent"
@@ -74,11 +94,69 @@
                         android:text="Alamat" />
 
                     <TextView
-                        android:id="@+id/txtDJamBuka"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:text="Jam Buka" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txtDToday"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:id="@+id/txtDHari"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginLeft="8dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txtDHour"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:id="@+id/txtDJam"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginLeft="8dp" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
 
                     <TextView
                         android:id="@+id/txtDTelepon"
@@ -192,7 +270,6 @@
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
-
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

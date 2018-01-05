@@ -29,7 +29,7 @@
             android:layout_below="@+id/txtNama"
             android:layout_toEndOf="@+id/imgList"
             android:text="Alamat"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/txtRating"

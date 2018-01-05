@@ -2,15 +2,19 @@ package com.efpro.bengkelmotor_01.Activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -60,16 +64,19 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     ReviewAdapter reviewAdapter;
     ArrayList<ReviewBengkel> mReviewBengkels = new ArrayList<>();
     FloatingActionButton fab_navigation;
-    TextView    txtDNama, txtDAlamat, txtDJamBuka, txtDTelepon,
+    TextView    txtDAlamat, txtDHari, txtDJam, txtDToday, txtDHour, txtDTelepon,
                 txtMyUsername, txtMyComment, txtPostDate;
     EditText    edtReview;
-    ImageView imgMyProfile;
+    ImageView imgMyProfile,imgDetailBengkel;
     Button  btnSubmit;
     ImageButton btnMenuReview;
     RatingBar rtbMyRate;
+    AppBarLayout Appbar;
+    CollapsingToolbarLayout CoolToolbar;
+    Toolbar toolbar;
     Intent mapIntent;
     Uri gmmIntentUri, photoUrl;
-    String latlong, namaBengkel, bengkelID, reviewBengkelID, uid, username, date, comment, sPhotoUrl;
+    String latlong, bengkelID, reviewBengkelID, uid, username, date, comment, sPhotoUrl;
     int rate, div ;
     double sumRate = 0;
     HashMap<String, String> hashMap;
@@ -78,6 +85,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     StorageReference mStorageRef;
     FirebaseAuth mAuth;
     boolean alreadyReview = false;
+    boolean ExpandedActionBar = true;
     int status = 0;
 
     @Override
@@ -85,20 +93,28 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_bengkel);
 
-        fab_navigation  = (FloatingActionButton) findViewById(R.id.fab_navigation);
-        txtDNama        = (TextView) findViewById(R.id.txtDNama);
-        txtDAlamat      = (TextView) findViewById(R.id.txtDAlamat);
-        txtDJamBuka     = (TextView) findViewById(R.id.txtDJamBuka);
-        txtDTelepon     = (TextView) findViewById(R.id.txtDTelepon);
-        txtMyUsername   = (TextView) findViewById(R.id.txtMyUsername);
-        txtMyComment    = (TextView) findViewById(R.id.txtMyComment);
-        txtPostDate     = (TextView) findViewById(R.id.txtPostDate);
-        edtReview       = (EditText) findViewById(R.id.edtReview);
-        btnSubmit       = (Button) findViewById(R.id.btnSubmit);
-        imgMyProfile    = (ImageView) findViewById(R.id.imgMyProfile);
-        btnMenuReview   = (ImageButton) findViewById(R.id.btnMenuReview);
-        rtbMyRate       = (RatingBar) findViewById(R.id.rtbMyRate);
-        reviewListView  = (ExpandableHeightListView) findViewById(R.id.reviewListView);
+        fab_navigation      = (FloatingActionButton) findViewById(R.id.fab_navigation);
+        txtDAlamat          = (TextView) findViewById(R.id.txtDAlamat);
+        txtDToday           = (TextView) findViewById(R.id.txtDToday);
+        txtDHour            = (TextView) findViewById(R.id.txtDHour);
+        txtDHari            = (TextView) findViewById(R.id.txtDHari);
+        txtDJam             = (TextView) findViewById(R.id.txtDJam);
+        txtDTelepon         = (TextView) findViewById(R.id.txtDTelepon);
+        txtMyUsername       = (TextView) findViewById(R.id.txtMyUsername);
+        txtMyComment        = (TextView) findViewById(R.id.txtMyComment);
+        txtPostDate         = (TextView) findViewById(R.id.txtPostDate);
+        edtReview           = (EditText) findViewById(R.id.edtReview);
+        btnSubmit           = (Button) findViewById(R.id.btnSubmit);
+        imgMyProfile        = (ImageView) findViewById(R.id.imgMyProfile);
+        imgDetailBengkel    = (ImageView) findViewById(R.id.imgDetailBengkel);
+        btnMenuReview       = (ImageButton) findViewById(R.id.btnMenuReview);
+        rtbMyRate           = (RatingBar) findViewById(R.id.rtbMyRate);
+        reviewListView      = (ExpandableHeightListView) findViewById(R.id.reviewListView);
+        Appbar              = (AppBarLayout)findViewById(R.id.appbar);
+        CoolToolbar         = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
+        toolbar             = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
         reviewListView.setExpanded(true);
         btnSubmit.setOnClickListener(this);
         fab_navigation.setOnClickListener(this);
@@ -114,11 +130,13 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
 
         Bengkel detailBengkel = getIntent().getParcelableExtra("BENGKEL");
         hashMap = detailBengkel.getbJamBuka();
-        txtDNama.setText(detailBengkel.getbNama());
         txtDAlamat.setText(detailBengkel.getbAlamat());
         latlong = detailBengkel.getbLatitude() + "," + detailBengkel.getbLongitude();
         bengkelID = detailBengkel.getbID();
-        namaBengkel = detailBengkel.getbNama();
+        CoolToolbar.setTitle(detailBengkel.getbNama());
+        CoolToolbar.setCollapsedTitleTextColor(Color.WHITE);
+        CoolToolbar.setExpandedTitleColor(Color.WHITE);
+
 
 
         // TODO: 12/19/2017 getFotoBengkel() dari main activity / langsung terus di set
@@ -127,6 +145,21 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         getDataReview();
 
         SortDay();
+
+        Appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                if (Math.abs(verticalOffset) > 200){
+                    ExpandedActionBar = false;
+                    invalidateOptionsMenu();
+                } else {
+                    ExpandedActionBar = true;
+                    invalidateOptionsMenu();
+                }
+
+            }
+        });
 
     }
 
@@ -312,20 +345,27 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
 
         for (Map.Entry<Date, String> entry : sortedMap.entrySet()) {
             Date date = entry.getKey();
-            String jambuka = entry.getValue();
-            String jadwal = dft.format(date);
-            String tmpJamBuka = (jadwal + "\t\t\t\t\t\t\t" + ": " + jambuka);
-            if (txtDJamBuka.getText().length() > 0) {
-                txtDJamBuka.setText(txtDJamBuka.getText() + "\n" + tmpJamBuka);
+            String hari = dft.format(date);
+            String jam = entry.getValue();
+
+            if (txtDToday.getText().length() > 0){
+                if (txtDHari.getText().length() > 0) {
+                    txtDHari.setText(txtDHari.getText() + "\n" + hari);
+                    txtDJam.setText(txtDJam.getText() + "\n:  " + jam);
+                } else {
+                    txtDHari.setText(hari);
+                    txtDJam.setText(":  " + jam);
+                }
             } else {
-                txtDJamBuka.setText(tmpJamBuka);
+                txtDToday.setText(hari);
+                txtDHour.setText(":  " + jam);
             }
+
         }
     }
 
     public void addReview(String username, String comment, int rate, String date, String sPhotoUrl){
         ReviewBengkel rBengkel = new ReviewBengkel(username,comment,rate,date,sPhotoUrl);
-        //mReviewBengkelRef.child(bengkelID).child("NamaBengkel").setValue(namaBengkel);
         mReviewBengkelRef.child(bengkelID).child(uid).setValue(rBengkel);
     }
 

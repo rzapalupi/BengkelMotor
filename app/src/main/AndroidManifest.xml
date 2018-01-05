@@ -35,7 +35,7 @@
 
         <activity android:name=".Activity.AddBengkelActivity"
             android:label="Register Bengkel"/>
-        <activity android:name=".Activity.DetailBengkelActivity" />
+        <activity android:name=".Activity.DetailBengkelActivity" android:theme="@style/NoActionBar" />
         <activity android:name=".Activity.SignInActivity"
             android:label="Sign In"/>
         <activity android:name=".Activity.ProfileActivity"
