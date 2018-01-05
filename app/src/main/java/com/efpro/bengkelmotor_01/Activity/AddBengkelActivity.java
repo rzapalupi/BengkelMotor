@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -33,10 +34,15 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -61,16 +67,19 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     CheckBox cbH1, cbH2, cbH3, cbH4, cbH5, cbH6, cbH7;
     TextView tJamBuka, tSenin, tSelasa, tRabu, tKamis, tJumat, tSabtu, tMinggu;
     ImageView imgSnapMap, imgFoto1, imgFoto2, imgFoto3;
-    String nama, alamat, telepon, uid;
+    String nama, alamat, telepon, uid, key;
     RelativeLayout ly;
     double latitude, longitude;
     HashMap<String, String> jambuka = new HashMap<>();
+    int[] index = {0,0,0};
+
     boolean flagSetTime = false;
     boolean lokasi = false;
     boolean pic = false;
     boolean result = false;
 
     private DatabaseReference mBengkelRef;
+    private StorageReference mStorageRef;
     private FirebaseUser user;
 
     @Override
@@ -141,7 +150,22 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         btnAddBengkel.setOnClickListener(this);
 
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
+        mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+//        final ImageView[] imgFoto = {imgFoto1,imgFoto2,imgFoto3};
+//        Button btnUpload = (Button) findViewById(R.id.btnUpload);
+//        btnUpload.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                key = mBengkelRef.push().getKey();
+//                for(int x=0; x<3; x++){
+//                    if(index[x] == 1){
+//                        uploadFoto(imgFoto[x],x);
+//                    }
+//                }
+//            }
+//        });
 
     }
 
@@ -163,6 +187,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 if (isValidasi()){
                     Toast.makeText(this, "Data Belum Lengkap", Toast.LENGTH_SHORT).show();
                 } else{
+                    final ImageView[] imgFoto = {imgFoto1,imgFoto2,imgFoto3};
                     nama         = String.valueOf(edtNamaBengkel.getText());
                     alamat       = String.valueOf(edtAlamat.getText());
                     telepon      = String.valueOf(edtTelepon.getText());
@@ -186,9 +211,11 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                     }
                     Log.e(TAG, String.valueOf(jambuka));
                     addBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid);
-                    // TODO: 12/17/2017 add photo
-                    //
-                    //
+                    for(int x=0; x<3; x++){
+                        if(index[x] == 1){
+                            uploadFoto(imgFoto[x],x);
+                        }
+                    }
                     Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
                     Intent intentProfile = new Intent(this, ProfileActivity.class);
                     startActivity(intentProfile);
@@ -371,6 +398,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
             Glide.with(this).load(url).into(imgSnapMap);
         } else if (reqCode == 1){
             if (resultCode == RESULT_OK) {
+                index[0] = 1;
                 if(pic){
                     onSelectFromGalleryResult(data, imgFoto1);
                 }else{
@@ -379,6 +407,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
             }
         } else if (reqCode == 2){
             if (resultCode == RESULT_OK) {
+                index[1] = 1;
                 if(pic){
                     onSelectFromGalleryResult(data, imgFoto2);
                 }else{
@@ -387,6 +416,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
             }
         } else if (reqCode == 3){
             if (resultCode == RESULT_OK) {
+                index[2] = 1;
                 if(pic){
                     onSelectFromGalleryResult(data, imgFoto3);
                 }else{
@@ -398,7 +428,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
 
     public void addBengkel(String nama, String alamat, String telepon,
                            double latitude, double longitude, HashMap<String, String> jambuka, String uid){
-        String key = mBengkelRef.push().getKey();
+        key = mBengkelRef.push().getKey();
         Bengkel bengkel = new Bengkel(nama,alamat,telepon,latitude,longitude, jambuka, uid, key);
         mBengkelRef.child(key).setValue(bengkel);
     }
@@ -570,7 +600,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     private void onCaptureImageResult(Intent data, ImageView imageView) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
         File destination = new File(Environment.getExternalStorageDirectory(),
                 System.currentTimeMillis() + ".jpg");
@@ -586,7 +616,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        imageView.setPadding(0,0,0,0);
         imageView.setImageBitmap(thumbnail);
     }
 
@@ -601,7 +631,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 e.printStackTrace();
             }
         }
-
+        imageView.setPadding(0,0,0,0);
         imageView.setImageBitmap(bm);
     }
 
@@ -646,6 +676,32 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     public void cameraIntent() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePicture, reqCode);
+    }
+
+    public void uploadFoto(ImageView imageView, int index){
+        StorageReference bengkelIDRef = mStorageRef.child(key).child(key +"_"+ index);
+
+        imageView.setDrawingCacheEnabled(true);
+        imageView.buildDrawingCache();
+        Bitmap bitmap = imageView.getDrawingCache();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = bengkelIDRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                Log.e(TAG, "onSuccess: " + downloadUrl );
+            }
+        });
     }
 
 }

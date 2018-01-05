@@ -20,17 +20,22 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.Foto;
 import com.efpro.bengkelmotor_01.Fragment.MapFragment;
 import com.efpro.bengkelmotor_01.Fragment.SplashFragment;
 import com.efpro.bengkelmotor_01.Haversine;
 import com.efpro.bengkelmotor_01.PermissionUtils;
 import com.efpro.bengkelmotor_01.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +62,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private FirebaseAuth mAuth;
     private DatabaseReference mBengkelRef;
+    private StorageReference mStorageRef;
     private ArrayList<Bengkel> bengkels = new ArrayList<>();
+    private ArrayList<Foto> fotobengkels = new ArrayList<>();
 
     String bengkelID;
     Double latitude, longitude;
@@ -89,9 +96,8 @@ public class MainActivity extends AppCompatActivity implements
             calledAlready = true;
         }
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
-
         mBengkelRef.keepSynced(true);
-
+        mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // getting GPS status
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -281,6 +287,10 @@ public class MainActivity extends AppCompatActivity implements
         return bengkels;
     }
 
+    public ArrayList<Foto> getFotoBengkel() {
+        return fotobengkels;
+    }
+
     public void getDatabase(){
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -290,8 +300,8 @@ public class MainActivity extends AppCompatActivity implements
                 /**--- with radius, for show bengkel location which in radius---**/
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
-                    //bengkelID = bengkelSnapshot.getKey();
-                    bengkelID = String.valueOf(bengkelSnapshot);
+                    bengkelID = bengkelSnapshot.getKey();
+//                    bengkelID = String.valueOf(bengkelSnapshot);
                     Log.e(TAG,"ID: " + bengkelID);
                     if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
                             bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
@@ -300,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements
                         double haversine = new Haversine().Formula(latitude,longitude,bengkel.getbLatitude(),bengkel.getbLongitude());
                         bengkel.setbJarak(haversine);
                         bengkels.add(bengkel);
+                        getDataFotoBengkel(bengkelID);
                     }
                 }
 
@@ -311,12 +322,6 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
 
-//                for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
-//                    Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
-//                    Log.e("Nama", bengkel.getbNama());
-//                    Log.e("Alamat", bengkel.getbAlamat());
-//                    bengkels.add(bengkel);
-//                }
             }
 
             @Override
@@ -353,5 +358,23 @@ public class MainActivity extends AppCompatActivity implements
             }, 3000);
             backpress = true;
         }
+    }
+
+    public void getDataFotoBengkel(final String bengkelID){
+        StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_0");
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Foto fotoBengkel = new Foto(bengkelID, bytes);
+                fotobengkels.add(fotoBengkel);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
     }
 }

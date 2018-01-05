@@ -14,6 +14,7 @@ import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.ProfileActivity;
 import com.efpro.bengkelmotor_01.Adapter.BengkelAdapter;
 import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.Foto;
 import com.efpro.bengkelmotor_01.R;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class MyBengkelFragment extends Fragment implements AdapterView.OnItemCli
     ListView bengkelListView;
     BengkelAdapter bengkelAdapter;
     ArrayList<Bengkel> mMyBengkels;
+    ArrayList<Foto> mMyFotoBengkels;
     View mView;
 
     public MyBengkelFragment() {
@@ -42,7 +44,9 @@ public class MyBengkelFragment extends Fragment implements AdapterView.OnItemCli
         bengkelListView.setOnItemClickListener(this);
 
         mMyBengkels = ((ProfileActivity)getActivity()).getMyBengkels();
-        bengkelAdapter = new BengkelAdapter(getActivity(),mMyBengkels );
+        mMyFotoBengkels = ((ProfileActivity)getActivity()).getMyfotobengkels();
+        bengkelAdapter = new BengkelAdapter(getActivity(),mMyBengkels, mMyFotoBengkels);
+
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();
 
@@ -62,7 +66,7 @@ public class MyBengkelFragment extends Fragment implements AdapterView.OnItemCli
     public void onResume() {
         super.onResume();
         mMyBengkels = ((ProfileActivity)getActivity()).getMyBengkels();
-        bengkelAdapter = new BengkelAdapter(getActivity(),mMyBengkels );
+        bengkelAdapter = new BengkelAdapter(getActivity(),mMyBengkels, mMyFotoBengkels);
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();
     }

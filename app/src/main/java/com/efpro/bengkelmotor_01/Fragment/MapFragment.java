@@ -4,6 +4,8 @@ package com.efpro.bengkelmotor_01.Fragment;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -15,11 +17,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.MainActivity;
 import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.Foto;
 import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,9 +49,11 @@ public class MapFragment extends Fragment
     private View            mView;
     FloatingActionButton    fab_map, fab_myLocation;
     ArrayList<Bengkel>      tmpBengkel;
+    ArrayList<Foto> mFotoBengkels;
     TextView                txtTNama, txtTAlamat, txtTJarak,
                             txtBNama, txtBAlamat, txtBJarak;
     CardView                cdvBengkelTop, cdvBengkelBottom;
+    ImageView               imgBengkel;
     int setTag;
 
     public MapFragment() {
@@ -70,7 +76,10 @@ public class MapFragment extends Fragment
         fab_myLocation      = (FloatingActionButton) mView.findViewById(R.id.fab_myLocation);
         cdvBengkelTop       = (CardView) mView.findViewById(R.id.cdvBengkelTop);
         cdvBengkelBottom    = (CardView) mView.findViewById(R.id.cdvBengkelBottom);
+        imgBengkel          = (ImageView) mView.findViewById(R.id.imgBengkel);
+
         tmpBengkel          = ((MainActivity)getActivity()).getBengkelList();
+        mFotoBengkels = ((MainActivity)getActivity()).getFotoBengkel();
 
         fab_map.setOnClickListener(this);
         fab_myLocation.setOnClickListener(this);
@@ -166,12 +175,20 @@ public class MapFragment extends Fragment
     public boolean onMarkerClick(Marker marker) {
         for(Bengkel bengkel: tmpBengkel){
             if(marker.getTitle().equals(bengkel.getbNama())){
+                for(Foto fotoBengkel: mFotoBengkels){
+                    if(bengkel.getbID().equals(fotoBengkel.getId())){
+                        byte[] bytes = fotoBengkel.getFoto();
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        imgBengkel.setImageBitmap(bmp);
+                    }
+                }
                 txtBNama.setText(bengkel.getbNama());
                 txtBAlamat.setText(bengkel.getbAlamat());
                 txtBJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
                 setTag = tmpBengkel.indexOf(bengkel);
                 Log.d("cardview", "index = " + setTag);
                 cdvBengkelBottom.setVisibility(View.VISIBLE);
+
             }
         }
         return false;

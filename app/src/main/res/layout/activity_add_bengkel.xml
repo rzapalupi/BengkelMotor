@@ -475,6 +475,14 @@
             android:layout_margin="8dp"
             android:text="@string/set_lokasi"/>
 
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:text="upload"/>
+
         <ImageView
             android:id="@+id/imgSnapMap"
             android:layout_width="match_parent"
@@ -496,6 +504,7 @@
                 android:layout_margin="8dp"
                 android:padding="8dp"
                 android:src="@drawable/ic_add_a_photo_black_50dp"
+                android:scaleType="centerCrop"
                 android:onClick="addPhoto"/>
             <ImageView
                 android:id="@+id/imgFoto2"
@@ -504,6 +513,7 @@
                 android:layout_margin="8dp"
                 android:padding="8dp"
                 android:src="@drawable/ic_add_a_photo_black_50dp"
+                android:scaleType="centerCrop"
                 android:onClick="addPhoto"/>
             <ImageView
                 android:id="@+id/imgFoto3"
@@ -512,6 +522,7 @@
                 android:layout_margin="8dp"
                 android:padding="8dp"
                 android:src="@drawable/ic_add_a_photo_black_50dp"
+                android:scaleType="centerCrop"
                 android:onClick="addPhoto"/>
 
         </LinearLayout>

@@ -1,9 +1,13 @@
 package com.efpro.bengkelmotor_01.Activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
@@ -14,15 +18,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.efpro.bengkelmotor_01.Adapter.ReviewAdapter;
 import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.ExpandableHeightListView;
+import com.efpro.bengkelmotor_01.Foto;
 import com.efpro.bengkelmotor_01.R;
 import com.efpro.bengkelmotor_01.ReviewBengkel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +40,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,17 +63,20 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     TextView    txtDNama, txtDAlamat, txtDJamBuka, txtDTelepon,
                 txtMyUsername, txtMyComment, txtPostDate;
     EditText    edtReview;
+    ImageView imgMyProfile;
     Button  btnSubmit;
     ImageButton btnMenuReview;
     RatingBar rtbMyRate;
     Intent mapIntent;
-    Uri gmmIntentUri;
-    String latlong, namaBengkel, bengkelID, reviewBengkelID, uid, username, date, comment;
+    Uri gmmIntentUri, photoUrl;
+    String latlong, namaBengkel, bengkelID, reviewBengkelID, uid, username, date, comment, sPhotoUrl;
     int rate, div ;
     double sumRate = 0;
     HashMap<String, String> hashMap;
     Map<Date, String> sortedMap = new TreeMap<Date, String>();
     DatabaseReference mReviewBengkelRef, mBengkelRef;
+    StorageReference mStorageRef;
+    FirebaseAuth mAuth;
     boolean alreadyReview = false;
     int status = 0;
 
@@ -80,6 +95,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         txtPostDate     = (TextView) findViewById(R.id.txtPostDate);
         edtReview       = (EditText) findViewById(R.id.edtReview);
         btnSubmit       = (Button) findViewById(R.id.btnSubmit);
+        imgMyProfile    = (ImageView) findViewById(R.id.imgMyProfile);
         btnMenuReview   = (ImageButton) findViewById(R.id.btnMenuReview);
         rtbMyRate       = (RatingBar) findViewById(R.id.rtbMyRate);
         reviewListView  = (ExpandableHeightListView) findViewById(R.id.reviewListView);
@@ -90,8 +106,9 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         getCurrentUserID();
 
         //set database review from firebase
-        mReviewBengkelRef = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
-        mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
+        mReviewBengkelRef   = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
+        mBengkelRef         = FirebaseDatabase.getInstance().getReference("ListBengkel");
+        mStorageRef         = FirebaseStorage.getInstance().getReference("FotoBengkel");
         mReviewBengkelRef.keepSynced(true);
         mBengkelRef.keepSynced(true);
 
@@ -102,8 +119,11 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         latlong = detailBengkel.getbLatitude() + "," + detailBengkel.getbLongitude();
         bengkelID = detailBengkel.getbID();
         namaBengkel = detailBengkel.getbNama();
+
+
+        // TODO: 12/19/2017 getFotoBengkel() dari main activity / langsung terus di set
         reviewAdapter = new ReviewAdapter(this, mReviewBengkels, status);
-//        reviewAdapter = new ReviewAdapter(this, mReviewBengkels);
+
         getDataReview();
 
         SortDay();
@@ -137,7 +157,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
                 if (comment.isEmpty() || rate == 0){
                     Toast.makeText(this, "Silahkan isi nilai atau ulasan anda", Toast.LENGTH_SHORT).show();
                 } else {
-                    addReview(username, comment, rate,  date);
+                    addReview(username, comment, rate, date, sPhotoUrl);
                     getDataReview();
                 }
                 break;
@@ -212,6 +232,24 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
 
     }
 
+    public void getDetailFotoBengkel(final String bengkelID, int index){
+        StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_"+index);
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Foto fotoBengkel = new Foto(bengkelID, bytes);
+//                fotobengkels.add(fotoBengkel);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
+
     public void getCurrentUserID(){
         //get profile current user
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -219,10 +257,24 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
             //dont show cdvMyReview
             CardView cdvMyReview = (CardView) findViewById(R.id.cdvMyReview);
             cdvMyReview.setVisibility(View.GONE);
+            uid = "-1";
         } else {
             FirebaseUser user = mAuth.getCurrentUser();
             uid = user.getUid();
             username = user.getDisplayName();
+            photoUrl = user.getPhotoUrl();
+            Log.e(TAG, "getCurrentUserID: " + photoUrl );
+            Glide.with(this).asBitmap().load(photoUrl)
+                    .into(new BitmapImageViewTarget(imgMyProfile) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable rounded =
+                                    RoundedBitmapDrawableFactory.create(DetailBengkelActivity.this.getResources(), resource);
+                            rounded.setCircular(true);
+                            imgMyProfile.setImageDrawable(rounded);
+                        }
+                    });
+            sPhotoUrl = String.valueOf(photoUrl);
         }
 
     }
@@ -271,8 +323,8 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    public void addReview(String username, String comment, int rate, String date){
-        ReviewBengkel rBengkel = new ReviewBengkel(username,comment,rate,date);
+    public void addReview(String username, String comment, int rate, String date, String sPhotoUrl){
+        ReviewBengkel rBengkel = new ReviewBengkel(username,comment,rate,date,sPhotoUrl);
         //mReviewBengkelRef.child(bengkelID).child("NamaBengkel").setValue(namaBengkel);
         mReviewBengkelRef.child(bengkelID).child(uid).setValue(rBengkel);
     }
@@ -303,6 +355,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
             txtPostDate.setText("Nilai bengkel ini");
         }
     }
+
 
 
 }

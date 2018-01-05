@@ -16,6 +16,7 @@ import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.MainActivity;
 import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.Adapter.BengkelAdapter;
+import com.efpro.bengkelmotor_01.Foto;
 import com.efpro.bengkelmotor_01.R;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class BengkelFragment extends Fragment implements View.OnClickListener, A
     FloatingActionButton fab_bengkel;
     BengkelAdapter bengkelAdapter;
     ArrayList<Bengkel> mBengkels;
+    ArrayList<Foto> mFotoBengkels;
     View mView;
 
 
@@ -48,7 +50,9 @@ public class BengkelFragment extends Fragment implements View.OnClickListener, A
         bengkelListView.setOnItemClickListener(this);
 
         mBengkels = ((MainActivity)getActivity()).getBengkelList();
-        bengkelAdapter = new BengkelAdapter(getActivity(),mBengkels );
+        mFotoBengkels = ((MainActivity)getActivity()).getFotoBengkel();
+        bengkelAdapter = new BengkelAdapter(getActivity(),mBengkels, mFotoBengkels );
+
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();
 
@@ -80,7 +84,7 @@ public class BengkelFragment extends Fragment implements View.OnClickListener, A
     public void onResume() {
         super.onResume();
         mBengkels = ((MainActivity)getActivity()).getBengkelList();
-        bengkelAdapter = new BengkelAdapter(getActivity(),mBengkels );
+        bengkelAdapter = new BengkelAdapter(getActivity(),mBengkels, mFotoBengkels);
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();
     }

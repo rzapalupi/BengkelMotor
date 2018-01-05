@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.efpro.bengkelmotor_01.R;
@@ -29,6 +30,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -36,11 +39,13 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private static final int RC_SIGN_IN = 2906;
 
     private FirebaseAuth mAuth;
+    private StorageReference mStorageRef;
     private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mCallbackManager;
 
     SignInButton btnGoogleSignIn;
     LoginButton loginButton;
+    ImageView imgUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +55,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         btnGoogleSignIn     = (SignInButton) findViewById(R.id.btnGoogleSignIn);
         btnGoogleSignIn.setOnClickListener(this);
         loginButton         = (LoginButton) findViewById(R.id.btnFacebookSignIn);
-
+        mStorageRef         = FirebaseStorage.getInstance().getReference("FotoUser");
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             startActivity(new Intent(SignInActivity.this, MainActivity.class));
@@ -191,4 +196,30 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
+
+//    public void uploadFotoUser(ImageView imageView, String uid){
+//        StorageReference userIDRef = mStorageRef.child(uid);
+//
+//        imageView.setDrawingCacheEnabled(true);
+//        imageView.buildDrawingCache();
+//        Bitmap bitmap = imageView.getDrawingCache();
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//        byte[] data = baos.toByteArray();
+//
+//        UploadTask uploadTask = userIDRef.putBytes(data);
+//        uploadTask.addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                Log.e(TAG, "onFailure: Fail to upload imgUser" );
+//            }
+//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+//                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+//                Log.e(TAG, "onSuccess: " + downloadUrl );
+//            }
+//        });
+//    }
 }

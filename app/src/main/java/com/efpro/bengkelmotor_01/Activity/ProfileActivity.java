@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.efpro.bengkelmotor_01.Adapter.TabsPagerAdapter;
 import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.Foto;
 import com.efpro.bengkelmotor_01.Fragment.MyBengkelFragment;
 import com.efpro.bengkelmotor_01.Fragment.MyReviewFragment;
 import com.efpro.bengkelmotor_01.R;
@@ -29,6 +30,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,8 +40,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -56,10 +62,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     //static boolean calledAlready_fbProfileAct = false; // flag for Fragment Status
     private DatabaseReference mMyBengkelRef, mReviewBengkelRef;
+    private StorageReference mStorageRef;
     private ArrayList<Bengkel> myBengkels = new ArrayList<>();
-    private ArrayList<Bengkel> tmpBengkels = new ArrayList<>();
+    private ArrayList<Bengkel> myReviewedBengkels = new ArrayList<>();
     private ArrayList<ReviewBengkel> myReviews = new ArrayList<>();
-    private ArrayList<String> tmpBengkelID = new ArrayList<String>();
+    private ArrayList<String> myReviewedBengkelID = new ArrayList<String>();
+    private ArrayList<Foto> myfotobengkels = new ArrayList<>();
 
 
     @Override
@@ -79,14 +87,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
 
-
         mMyBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
         mReviewBengkelRef = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
+        mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         mMyBengkelRef.keepSynced(true);
         mReviewBengkelRef.keepSynced(true);
 
         getCurrentUser();
-
 
     }
 
@@ -131,8 +138,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         return myBengkels;
     }
 
-    public ArrayList<Bengkel> getTmpBengkels() {
-        return tmpBengkels;
+    public ArrayList<Bengkel> getMyReviewedBengkels() {
+        return myReviewedBengkels;
     }
 
     public ArrayList<ReviewBengkel> getMyReviews() {
@@ -147,14 +154,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 int i = 0;
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
+                    bengkelID = bengkelSnapshot.getKey();
                     if(bengkel.getbUid().equals(uid)) {
                         myBengkels.add(bengkel);
+                        getDataMyFotoBengkel(bengkelID);
                     }
-                    if(tmpBengkelID.size() == 0){
+                    if(myReviewedBengkelID.size() == 0){
                         //do nothing
-                    }else if (tmpBengkelID.get(i).equals(bengkelSnapshot.getKey())){
-                        tmpBengkels.add(bengkel);
-                        if (i < (tmpBengkelID.size()-1)){
+                    }else if (myReviewedBengkelID.get(i).equals(bengkelSnapshot.getKey())){
+                        //menyimpan data bengkel yg sudah di review untuk digunakan di myReviewFragment
+                        myReviewedBengkels.add(bengkel);
+                        if (i < (myReviewedBengkelID.size()-1)){
                             i++;
                         }
                     }
@@ -180,8 +190,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         ReviewBengkel reviewBengkel = reviewSnapshot.getValue(ReviewBengkel.class);
                         if (uid.equals(reviewSnapshot.getKey())) {
                             myReviews.add(reviewBengkel);
-                            tmpBengkelID.add(bengkelSnapshot.getKey());
-                            Log.e( "onDataChange: ",tmpBengkelID.get(x) );
+                            //get IDBengkel yg telah di review
+                            myReviewedBengkelID.add(bengkelSnapshot.getKey());
+                            Log.e( "onDataChange: ",myReviewedBengkelID.get(x) );
                             x++;
                         }
                     }
@@ -233,5 +244,32 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
     }
+
+    // TODO: 12/19/2017 getDataMyFotoBengkel()  OK
+    public ArrayList<Foto> getMyfotobengkels() {
+        return myfotobengkels;
+    }
+
+    public void  getDataMyFotoBengkel(final String bengkelID) {
+        StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_0");
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Data for "images/island.jpg" is returns, use this as needed
+                Log.e(TAG, "onSuccess: bytes" + Arrays.toString(bytes));
+                Foto fotoBengkel = new Foto(bengkelID, bytes);
+                myfotobengkels.add(fotoBengkel);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
+
+    // TODO: 12/19/2017 getFotoBengkelReviewed()
 
 }

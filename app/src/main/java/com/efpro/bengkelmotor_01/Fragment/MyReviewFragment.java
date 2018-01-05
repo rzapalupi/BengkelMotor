@@ -27,7 +27,7 @@ public class MyReviewFragment extends Fragment implements AdapterView.OnItemClic
     ListView reviewListView;
     ReviewAdapter reviewAdapter;
     ArrayList<ReviewBengkel> mMyReviews;
-    ArrayList<Bengkel> mBengkels;
+    ArrayList<Bengkel> mMyReviewedBengkels;
     View mView;
     int status = 1;
 
@@ -43,10 +43,12 @@ public class MyReviewFragment extends Fragment implements AdapterView.OnItemClic
         mView =  inflater.inflate(R.layout.fragment_my_review, container, false);
         reviewListView = (ListView) mView.findViewById(R.id.reviewListView);
 
-        mMyReviews      = ((ProfileActivity)getActivity()).getMyReviews();
-        mBengkels       = ((ProfileActivity)getActivity()).getTmpBengkels();
-        //reviewAdapter   = new ReviewAdapter(getActivity(),mMyReviews, status);
-        reviewAdapter   = new ReviewAdapter(getActivity(),mMyReviews, mBengkels, status);
+        mMyReviews          = ((ProfileActivity)getActivity()).getMyReviews();
+        mMyReviewedBengkels = ((ProfileActivity)getActivity()).getMyReviewedBengkels();
+        // TODO: 12/19/2017 getFotoBengkelReviewed() dari ProfilActivity OK
+        // TODO: 12/19/2017 tambah parameter foto bengkel yang telah di review OK
+        reviewAdapter   = new ReviewAdapter(getActivity(),mMyReviews, mMyReviewedBengkels, status);
+
         reviewListView.setAdapter(reviewAdapter);
         reviewAdapter.notifyDataSetChanged();
         reviewListView.setOnItemClickListener(this);
@@ -56,7 +58,7 @@ public class MyReviewFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Bengkel bengkel = mBengkels.get(position);
+        Bengkel bengkel = mMyReviewedBengkels.get(position);
         Intent intent = new Intent(getActivity(), DetailBengkelActivity.class);
         intent.putExtra("BENGKEL",bengkel);
         startActivity(intent);

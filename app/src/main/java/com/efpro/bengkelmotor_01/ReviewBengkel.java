@@ -10,17 +10,18 @@ public class ReviewBengkel {
     private String comment;
     private int rate;
     private String date;
-
+    private String photoUrl;
 
     public ReviewBengkel(){
 
     }
 
-    public ReviewBengkel(String username, String comment, int rate, String date) {
+    public ReviewBengkel(String username, String comment, int rate, String date, String photoUrl) {
         this.username = username;
         this.comment = comment;
         this.rate = rate;
         this.date = date;
+        this.photoUrl = photoUrl;
     }
 
     public String getUsername() {
@@ -54,4 +55,15 @@ public class ReviewBengkel {
     public void setDate(String date) {
         this.date = date;
     }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+
+
 }
