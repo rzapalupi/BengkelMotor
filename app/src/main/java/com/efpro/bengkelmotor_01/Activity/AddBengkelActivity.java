@@ -153,20 +153,6 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-//        final ImageView[] imgFoto = {imgFoto1,imgFoto2,imgFoto3};
-//        Button btnUpload = (Button) findViewById(R.id.btnUpload);
-//        btnUpload.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                key = mBengkelRef.push().getKey();
-//                for(int x=0; x<3; x++){
-//                    if(index[x] == 1){
-//                        uploadFoto(imgFoto[x],x);
-//                    }
-//                }
-//            }
-//        });
-
     }
 
     @Override
@@ -217,8 +203,8 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                         }
                     }
                     Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
-                    Intent intentProfile = new Intent(this, ProfileActivity.class);
-                    startActivity(intentProfile);
+
+                    super.onBackPressed();
                     finish();
                 }
             break;

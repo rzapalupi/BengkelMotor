@@ -14,8 +14,8 @@ import android.widget.ListView;
 
 import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.MainActivity;
-import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.Adapter.BengkelAdapter;
+import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.Foto;
 import com.efpro.bengkelmotor_01.R;
 
@@ -52,10 +52,8 @@ public class BengkelFragment extends Fragment implements View.OnClickListener, A
         mBengkels = ((MainActivity)getActivity()).getBengkelList();
         mFotoBengkels = ((MainActivity)getActivity()).getFotoBengkel();
         bengkelAdapter = new BengkelAdapter(getActivity(),mBengkels, mFotoBengkels );
-
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();
-
 
         return mView;
     }
@@ -84,6 +82,7 @@ public class BengkelFragment extends Fragment implements View.OnClickListener, A
     public void onResume() {
         super.onResume();
         mBengkels = ((MainActivity)getActivity()).getBengkelList();
+        mFotoBengkels = ((MainActivity)getActivity()).getFotoBengkel();
         bengkelAdapter = new BengkelAdapter(getActivity(),mBengkels, mFotoBengkels);
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();

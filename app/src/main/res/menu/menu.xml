@@ -2,24 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <group android:id="@+id/g_profile">
+        <item
+            android:title="@string/registrasi_bengkel"
+            android:id="@+id/menu_regbengkel"
+            app:showAsAction="never"/>
+        <item
+            android:title="@string/logout"
+            android:id="@+id/menu_logout"
+            app:showAsAction="never"/>
+    </group>
 
-    <item
-        android:title="@string/registrasi_bengkel"
-        android:id="@+id/menu_regbengkel"
-        app:showAsAction="never"
-        android:visible="false"/>
-    <item
-        android:title="@string/tips"
-        android:id="@+id/menu_tips"
-        app:showAsAction="never"/>
-    <item
-        android:title="@string/about"
-        android:id="@+id/menu_about"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/menu_profile"
-        android:icon="@drawable/ic_person_black_24dp"
-        android:title=""
-        app:showAsAction="ifRoom" />
+    <group  android:id="@+id/g_main">
+        <item
+            android:title="@string/tips"
+            android:id="@+id/menu_tips"
+            app:showAsAction="never"/>
+        <item
+            android:title="@string/about"
+            android:id="@+id/menu_about"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/menu_profile"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title=""
+            app:showAsAction="ifRoom" />
+    </group>
 
 </menu>

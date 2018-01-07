@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.efpro.bengkelmotor_01.R;
@@ -45,13 +45,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     SignInButton btnGoogleSignIn;
     LoginButton loginButton;
-    ImageView imgUser;
+    ProgressBar spinner;
+    View scrim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        spinner             = (ProgressBar) findViewById(R.id.progressBar);
+        scrim               = (View) findViewById(R.id.scrim);
         btnGoogleSignIn     = (SignInButton) findViewById(R.id.btnGoogleSignIn);
         btnGoogleSignIn.setOnClickListener(this);
         loginButton         = (LoginButton) findViewById(R.id.btnFacebookSignIn);
@@ -89,7 +92,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
-        //showProgressDialog();
+        showProgressDialog();
         // [END_EXCLUDE]
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -101,7 +104,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                            startActivity(new Intent(SignInActivity.this, ProfileActivity.class));
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -110,7 +113,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                     Toast.LENGTH_SHORT).show();
                         }
 
-                        //hideProgressDialog();
+//                        hideProgressDialog();
 
                     }
                 });
@@ -119,7 +122,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         // [START_EXCLUDE silent]
-        //showProgressDialog();
+        showProgressDialog();
         // [END_EXCLUDE]
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -131,7 +134,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                            startActivity(new Intent(SignInActivity.this, ProfileActivity.class));
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -141,7 +144,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         }
 
                         // [START_EXCLUDE]
-                        //hideProgressDialog();
+//                        hideProgressDialog();
                         // [END_EXCLUDE]
                     }
                 });
@@ -152,7 +155,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -197,29 +199,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-//    public void uploadFotoUser(ImageView imageView, String uid){
-//        StorageReference userIDRef = mStorageRef.child(uid);
-//
-//        imageView.setDrawingCacheEnabled(true);
-//        imageView.buildDrawingCache();
-//        Bitmap bitmap = imageView.getDrawingCache();
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//        byte[] data = baos.toByteArray();
-//
-//        UploadTask uploadTask = userIDRef.putBytes(data);
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                Log.e(TAG, "onFailure: Fail to upload imgUser" );
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-//                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-//                Log.e(TAG, "onSuccess: " + downloadUrl );
-//            }
-//        });
-//    }
+    private void showProgressDialog() {
+        spinner.setVisibility(View.VISIBLE);
+        scrim.setVisibility(View.VISIBLE);
+    }
+
 }

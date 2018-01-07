@@ -66,6 +66,7 @@ public class MyBengkelFragment extends Fragment implements AdapterView.OnItemCli
     public void onResume() {
         super.onResume();
         mMyBengkels = ((ProfileActivity)getActivity()).getMyBengkels();
+        mMyFotoBengkels = ((ProfileActivity)getActivity()).getMyfotobengkels();
         bengkelAdapter = new BengkelAdapter(getActivity(),mMyBengkels, mMyFotoBengkels);
         bengkelListView.setAdapter(bengkelAdapter);
         bengkelAdapter.notifyDataSetChanged();

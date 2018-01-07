@@ -113,11 +113,8 @@ public class MainActivity extends AppCompatActivity implements
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         optionsMenu = menu;
-        if (mAuth.getCurrentUser() != null) {
-            optionsMenu.getItem(0).setVisible(true);
-        } else {
-            optionsMenu.getItem(0).setVisible(false);
-        }
+        optionsMenu.setGroupVisible(R.id.g_main, true);
+        optionsMenu.setGroupVisible(R.id.g_profile,false);
         return true;
     }
 
@@ -131,17 +128,13 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.menu_profile:
                 Intent intentProfile = new Intent(this, ProfileActivity.class);
                 startActivity(intentProfile);
-            break;
-            case R.id.menu_regbengkel:
-                Intent intentReg = new Intent(this, AddBengkelActivity.class);
-                startActivity(intentReg);
+                finish();
             break;
             case R.id.menu_tips:
 //                Intent intentTips = new Intent(this, TipsActivity.class);
 //                startActivity(intentTips);
             break;
         }
-
         return true;
     }
 
@@ -301,12 +294,8 @@ public class MainActivity extends AppCompatActivity implements
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
                     bengkelID = bengkelSnapshot.getKey();
-//                    bengkelID = String.valueOf(bengkelSnapshot);
-                    Log.e(TAG,"ID: " + bengkelID);
                     if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
                             bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
-                        Log.e("Nama", bengkel.getbNama());
-                        Log.e("JamBuka", String.valueOf(bengkel.getbJamBuka()));
                         double haversine = new Haversine().Formula(latitude,longitude,bengkel.getbLatitude(),bengkel.getbLongitude());
                         bengkel.setbJarak(haversine);
                         bengkels.add(bengkel);
@@ -359,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements
             backpress = true;
         }
     }
+
 
     public void getDataFotoBengkel(final String bengkelID){
         StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_0");

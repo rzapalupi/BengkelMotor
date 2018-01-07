@@ -79,6 +79,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="7"
                     android:layout_height="wrap_content"
+                    android:inputType="phone"
                     android:hint="@string/no_telepon_bengkel"/>
             </LinearLayout>
 
@@ -475,21 +476,12 @@
             android:layout_margin="8dp"
             android:text="@string/set_lokasi"/>
 
-        <Button
-            android:id="@+id/btnUpload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:text="upload"/>
-
         <ImageView
             android:id="@+id/imgSnapMap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             />
-
 
         <LinearLayout
             android:layout_width="wrap_content"

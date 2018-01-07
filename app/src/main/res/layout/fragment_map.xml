@@ -13,6 +13,12 @@
         android:layout_width="match_parent"
         android:id="@+id/mapLayout"/>
 
+    <View
+        android:id="@+id/dummy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_myLocation"
         android:layout_width="wrap_content"
@@ -28,10 +34,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_above="@+id/cdvBengkelBottom"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="16dp"
         android:src="@drawable/gb1"/>
 
 
@@ -40,8 +43,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="2dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
     android:background="@android:color/white"
     >
 
@@ -50,23 +53,34 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/txtInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
+
+            <TextView
                 android:id="@+id/txtTNama"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NAma"/>
+                android:layout_margin="8dp"/>
+
             <TextView
                 android:id="@+id/txtTAlamat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtTNama"
-                android:text="Alamat"/>
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"/>
+
             <TextView
                 android:id="@+id/txtTJarak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/txtTAlamat"
                 android:layout_alignParentEnd="true"
-                android:text="KM"/>
+                android:layout_marginEnd="8dp"/>
 
         </RelativeLayout>
 
@@ -79,10 +93,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:layout_alignParentBottom="true"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="24dp"
         android:background="@android:color/white"
-        android:visibility="gone"
+        android:visibility="invisible"
         >
 
         <RelativeLayout
@@ -93,15 +107,17 @@
                 android:id="@+id/imgBengkel"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_launcher"
+                android:layout_margin="4dp"/>
 
             <TextView
                 android:id="@+id/txtBNama"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/imgBengkel"
+                android:layout_marginStart="8dp"
                 android:text="Nama Bengkel"
-                android:textSize="28sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/txtBAlamat"
@@ -109,8 +125,27 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtBNama"
                 android:layout_toEndOf="@+id/imgBengkel"
+                android:layout_marginStart="8dp"
                 android:text="Alamat"
-                android:textSize="24sp" />
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtBRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/imgBengkel"
+                android:layout_alignBottom="@+id/imgBengkel"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="4.3"
+                android:textSize="18sp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_black_24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_toEndOf="@+id/txtBRating"
+                android:layout_alignBottom="@+id/imgBengkel"/>
 
             <TextView
                 android:id="@+id/txtBJarak"
@@ -118,6 +153,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignBottom="@+id/imgBengkel"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
                 android:text="Jarak"
                 android:textSize="18sp" />
 

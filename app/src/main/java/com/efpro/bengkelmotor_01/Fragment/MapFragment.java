@@ -46,15 +46,16 @@ public class MapFragment extends Fragment
 
     private GoogleMap       mGoogleMap;
     private MapView         mMapView;
-    private View            mView;
+    private View            mView, dummy;
     FloatingActionButton    fab_map, fab_myLocation;
     ArrayList<Bengkel>      tmpBengkel;
-    ArrayList<Foto> mFotoBengkels;
+    ArrayList<Foto>         mFotoBengkels;
     TextView                txtTNama, txtTAlamat, txtTJarak,
-                            txtBNama, txtBAlamat, txtBJarak;
+                            txtBNama, txtBAlamat, txtBJarak, txtBRating,
+                            txtInfo;
     CardView                cdvBengkelTop, cdvBengkelBottom;
     ImageView               imgBengkel;
-    int setTag;
+    int                     setTag;
 
     public MapFragment() {
         // Required empty public constructor
@@ -73,18 +74,22 @@ public class MapFragment extends Fragment
         txtBNama            = (TextView) mView.findViewById(R.id.txtBNama);
         txtBAlamat          = (TextView) mView.findViewById(R.id.txtBAlamat);
         txtBJarak           = (TextView) mView.findViewById(R.id.txtBJarak);
+        txtBRating          = (TextView) mView.findViewById(R.id.txtBRating);
+        txtInfo             = (TextView) mView.findViewById(R.id.txtInfo);
         fab_myLocation      = (FloatingActionButton) mView.findViewById(R.id.fab_myLocation);
         cdvBengkelTop       = (CardView) mView.findViewById(R.id.cdvBengkelTop);
         cdvBengkelBottom    = (CardView) mView.findViewById(R.id.cdvBengkelBottom);
         imgBengkel          = (ImageView) mView.findViewById(R.id.imgBengkel);
+        dummy               = (View) mView.findViewById(R.id.dummy);
 
         tmpBengkel          = ((MainActivity)getActivity()).getBengkelList();
-        mFotoBengkels = ((MainActivity)getActivity()).getFotoBengkel();
+        mFotoBengkels       = ((MainActivity)getActivity()).getFotoBengkel();
 
         fab_map.setOnClickListener(this);
         fab_myLocation.setOnClickListener(this);
         cdvBengkelTop.setOnClickListener(this);
         cdvBengkelBottom.setOnClickListener(this);
+        dummy.setOnClickListener(this);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
 
@@ -111,9 +116,13 @@ public class MapFragment extends Fragment
         //Cardview menampilkan bengkel terdekat
         try{
             Bengkel bengkel = tmpBengkel.get(0);
-            txtTNama.setText(bengkel.getbNama());
-            txtTAlamat.setText(bengkel.getbAlamat());
-            txtTJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
+            if (bengkel!=null){
+                txtTNama.setText(bengkel.getbNama());
+                txtTAlamat.setText(bengkel.getbAlamat());
+                txtTJarak.setText(String.format("%.2f", bengkel.getbJarak()) + " Km");
+            } else {
+                txtInfo.setText("Tidak ada bengkel di sekitar anda");
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -168,7 +177,12 @@ public class MapFragment extends Fragment
                 intent.putExtra("BENGKEL",bengkel);
                 startActivity(intent);
             break;
+            case R.id.dummy:
+                cdvBengkelBottom.setVisibility(View.GONE);
+                dummy.setVisibility(View.GONE);
+            break;
         }
+
     }
 
     @Override
@@ -184,20 +198,23 @@ public class MapFragment extends Fragment
                 }
                 txtBNama.setText(bengkel.getbNama());
                 txtBAlamat.setText(bengkel.getbAlamat());
+                txtBRating.setText(String.format("%.1f",bengkel.getbRate()));
                 txtBJarak.setText(String.format("%.2f",bengkel.getbJarak()) + "Km");
                 setTag = tmpBengkel.indexOf(bengkel);
                 Log.d("cardview", "index = " + setTag);
                 cdvBengkelBottom.setVisibility(View.VISIBLE);
+                dummy.setVisibility(View.VISIBLE);
 
             }
         }
         return false;
     }
 
-
-
-
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        tmpBengkel          = ((MainActivity)getActivity()).getBengkelList();
+        mFotoBengkels       = ((MainActivity)getActivity()).getFotoBengkel();
+    }
 
 }

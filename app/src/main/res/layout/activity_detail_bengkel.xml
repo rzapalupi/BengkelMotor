@@ -33,21 +33,19 @@
             android:layout_height="match_parent"
             android:theme="@style/NoActionBar">
 
-            <ImageView
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:contentDescription="@string/app_name"
-                android:fitsSystemWindows="true"
-                android:id="@+id/imgDetailBengkel"
-                app:srcCompat="@mipmap/ic_launcher"
-                android:background="@color/colorPrimary"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                android:layout_height="200dp" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="290dp"/>
+
+            <LinearLayout
+                android:id="@+id/SliderDots"
+                android:orientation="horizontal"
                 android:layout_gravity="bottom"
-                android:background="@drawable/scrim"  />
+                android:gravity="center_vertical|center_horizontal|bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -100,21 +98,19 @@
                         android:text="Jam Buka" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/txtDToday"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
                                 android:layout_marginRight="8dp"
                                 android:layout_marginLeft="8dp"
                                 android:textStyle="bold"/>
@@ -127,19 +123,24 @@
                                 android:layout_marginRight="8dp"
                                 android:layout_marginLeft="8dp"/>
 
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:text="Telepon" />
+
+
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="4"
                             android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/txtDHour"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
                                 android:layout_marginRight="8dp"
                                 android:layout_marginLeft="8dp"
                                 android:textStyle="bold"/>
@@ -152,18 +153,32 @@
                                 android:layout_marginRight="8dp"
                                 android:layout_marginLeft="8dp" />
 
+                            <TextView
+                                android:id="@+id/txtDTelepon"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:text="098682684859"/>
+
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="19dp"
+                                android:layout_margin="7dp"
+                                android:layout_gravity="bottom"
+                                android:background="@null"
+                                android:src="@drawable/ic_phone_black_24dp"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
 
-                    <TextView
-                        android:id="@+id/txtDTelepon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="Telepon" />
 
                 </LinearLayout>
 
@@ -179,19 +194,20 @@
                 app:cardCornerRadius="2dp"
                 app:cardElevation="2dp">
 
+                <ImageButton
+                    android:id="@+id/btnMenuReview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/actionOverflowButtonStyle"
+                    android:layout_gravity="right"
+                    android:visibility="visible"
+                    android:onClick="showPopup"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
                     android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/btnMenuReview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="?android:attr/actionOverflowButtonStyle"
-                        android:layout_gravity="right"
-                        android:visibility="gone"
-                        android:onClick="showPopup"/>
 
                     <ImageView
                         android:id="@+id/imgMyProfile"

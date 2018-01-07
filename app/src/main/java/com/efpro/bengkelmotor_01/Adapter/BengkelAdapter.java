@@ -55,7 +55,6 @@ public class BengkelAdapter extends ArrayAdapter<Bengkel> {
             txtNama.setText(bengkel.getbNama());
             txtAlamat.setText(bengkel.getbAlamat());
             txtRating.setText(String.format("%.1f",bengkel.getbRate()));
-
             for (Foto fotoBengkel : mFotoBengkels){
                 if(fotoBengkel.getId().equals(bengkel.getbID())){
                     byte[] bytes = fotoBengkel.getFoto();
@@ -63,7 +62,6 @@ public class BengkelAdapter extends ArrayAdapter<Bengkel> {
                     imgList.setImageBitmap(bmp);
                 }
             }
-
             if(bengkel.getbJarak() == 0){
                 txtJarak.setVisibility(View.GONE);
             } else{

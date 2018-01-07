@@ -11,8 +11,8 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,23 +44,21 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileActivity";
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    Button btnLogOut, btnRegBengkel;
     TextView txtNamaUser;
     ImageView imgProfileUser;
     String uid, name, bengkelID, namaBengkel;
     Uri photoUrl;
+    Menu optionsMenu;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    //static boolean calledAlready_fbProfileAct = false; // flag for Fragment Status
     private DatabaseReference mMyBengkelRef, mReviewBengkelRef;
     private StorageReference mStorageRef;
     private ArrayList<Bengkel> myBengkels = new ArrayList<>();
@@ -78,14 +76,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         // Initilization
         txtNamaUser     = (TextView) findViewById(R.id.txtNamaUser);
         imgProfileUser  = (ImageView) findViewById(R.id.imgProfileUser);
-        btnLogOut       = (Button) findViewById(R.id.btnLogOut);
-        btnRegBengkel   = (Button) findViewById(R.id.btnRegBengkel);
         viewPager       = (ViewPager) findViewById(R.id.viewpager);
         tabLayout       = (TabLayout) findViewById(R.id.tabs);
-        btnRegBengkel.setOnClickListener(this);
-        btnLogOut.setOnClickListener(this);
-        tabLayout.setupWithViewPager(viewPager);
-        setupViewPager(viewPager);
 
         mMyBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
         mReviewBengkelRef = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
@@ -94,27 +86,38 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mReviewBengkelRef.keepSynced(true);
 
         getCurrentUser();
+        tabLayout.setupWithViewPager(viewPager);
+        setupViewPager(viewPager);
 
-    }
 
-    private void setupViewPager(ViewPager viewPager) {
-        TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new MyBengkelFragment(), "My Bengkel");
-        adapter.addFragment(new MyReviewFragment(), "My Review");
-        viewPager.setAdapter(adapter);
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btnLogOut:
-                signOut();
-            break;
-            case R.id.btnRegBengkel:
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        optionsMenu = menu;
+        optionsMenu.setGroupVisible(R.id.g_main, false);
+        optionsMenu.setGroupVisible(R.id.g_profile,true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_regbengkel:
                 Intent intentReg = new Intent(this, AddBengkelActivity.class);
                 startActivity(intentReg);
-            break;
+                break;
+            case R.id.menu_logout:
+                signOut();
+                break;
+            case R.id.menu_tips:
+//                Intent intentTips = new Intent(this, TipsActivity.class);
+//                startActivity(intentTips);
+                break;
         }
+        return true;
     }
 
     private void signOut() {
@@ -230,7 +233,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             imgProfileUser.setImageDrawable(rounded);
                         }
                     });
-
             getDataMyReview();
             getDataMyBengkel();
         }
@@ -257,8 +259,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                // Data for "images/island.jpg" is returns, use this as needed
-                Log.e(TAG, "onSuccess: bytes" + Arrays.toString(bytes));
                 Foto fotoBengkel = new Foto(bengkelID, bytes);
                 myfotobengkels.add(fotoBengkel);
             }
@@ -272,4 +272,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     // TODO: 12/19/2017 getFotoBengkelReviewed()
 
+    private void setupViewPager(ViewPager viewPager) {
+        TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new MyBengkelFragment(), "My Bengkel");
+        adapter.addFragment(new MyReviewFragment(), "My Review");
+        viewPager.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intentReg = new Intent(this, MainActivity.class);
+        startActivity(intentReg);
+        finish();
+    }
 }

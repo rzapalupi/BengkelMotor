@@ -25,18 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
             android:textSize="18sp"/>
-        <Button
-            android:id="@+id/btnLogOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/logout"/>
-        <Button
-            android:id="@+id/btnRegBengkel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/registrasi_bengkel"/>
-
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"

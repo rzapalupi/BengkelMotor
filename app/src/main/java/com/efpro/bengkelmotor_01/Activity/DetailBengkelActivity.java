@@ -9,8 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.efpro.bengkelmotor_01.Adapter.ReviewAdapter;
+import com.efpro.bengkelmotor_01.Adapter.ViewPagerAdapter;
 import com.efpro.bengkelmotor_01.Bengkel;
 import com.efpro.bengkelmotor_01.ExpandableHeightListView;
 import com.efpro.bengkelmotor_01.Foto;
@@ -53,8 +57,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimerTask;
 import java.util.TreeMap;
 
 public class DetailBengkelActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -63,11 +69,12 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     ExpandableHeightListView reviewListView;
     ReviewAdapter reviewAdapter;
     ArrayList<ReviewBengkel> mReviewBengkels = new ArrayList<>();
+    List<Foto> fotoDetailBengkels = new ArrayList<>();
     FloatingActionButton fab_navigation;
     TextView    txtDAlamat, txtDHari, txtDJam, txtDToday, txtDHour, txtDTelepon,
                 txtMyUsername, txtMyComment, txtPostDate;
     EditText    edtReview;
-    ImageView imgMyProfile,imgDetailBengkel;
+    ImageView imgMyProfile;
     Button  btnSubmit;
     ImageButton btnMenuReview;
     RatingBar rtbMyRate;
@@ -87,6 +94,10 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     boolean alreadyReview = false;
     boolean ExpandedActionBar = true;
     int status = 0;
+    ViewPager viewPager;
+    LinearLayout sliderDotspanel;
+    int dotscount = 3;
+    ImageView[] dots;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,13 +117,15 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         edtReview           = (EditText) findViewById(R.id.edtReview);
         btnSubmit           = (Button) findViewById(R.id.btnSubmit);
         imgMyProfile        = (ImageView) findViewById(R.id.imgMyProfile);
-        imgDetailBengkel    = (ImageView) findViewById(R.id.imgDetailBengkel);
         btnMenuReview       = (ImageButton) findViewById(R.id.btnMenuReview);
         rtbMyRate           = (RatingBar) findViewById(R.id.rtbMyRate);
         reviewListView      = (ExpandableHeightListView) findViewById(R.id.reviewListView);
         Appbar              = (AppBarLayout)findViewById(R.id.appbar);
         CoolToolbar         = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
         toolbar             = (Toolbar) findViewById(R.id.toolbar);
+        viewPager           = (ViewPager) findViewById(R.id.viewPager);
+        sliderDotspanel     = (LinearLayout) findViewById(R.id.SliderDots);
+
 
         setSupportActionBar(toolbar);
         reviewListView.setExpanded(true);
@@ -131,25 +144,61 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         Bengkel detailBengkel = getIntent().getParcelableExtra("BENGKEL");
         hashMap = detailBengkel.getbJamBuka();
         txtDAlamat.setText(detailBengkel.getbAlamat());
+        txtDTelepon.setText(": " + detailBengkel.getbTelepon());
         latlong = detailBengkel.getbLatitude() + "," + detailBengkel.getbLongitude();
         bengkelID = detailBengkel.getbID();
         CoolToolbar.setTitle(detailBengkel.getbNama());
         CoolToolbar.setCollapsedTitleTextColor(Color.WHITE);
         CoolToolbar.setExpandedTitleColor(Color.WHITE);
 
+        for(int index=0; index<3; index++){
+            String numb = String.valueOf(index);
+            getDetailFotoBengkel(bengkelID, numb);
+        }
 
+        dots = new ImageView[dotscount];
+        for(int i = 0; i < dotscount; i++){
 
-        // TODO: 12/19/2017 getFotoBengkel() dari main activity / langsung terus di set
+            dots[i] = new ImageView(this);
+            dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            params.setMargins(8, 0, 8, 0);
+
+            sliderDotspanel.addView(dots[i], params);
+
+        }
+        dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                for(int i = 0; i< dotscount; i++){
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+                }
+
+                dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         reviewAdapter = new ReviewAdapter(this, mReviewBengkels, status);
-
         getDataReview();
-
         SortDay();
-
         Appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-
                 if (Math.abs(verticalOffset) > 200){
                     ExpandedActionBar = false;
                     invalidateOptionsMenu();
@@ -157,10 +206,11 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
                     ExpandedActionBar = true;
                     invalidateOptionsMenu();
                 }
-
             }
         });
 
+//        Timer timer = new Timer();
+//        timer.scheduleAtFixedRate(new MyTimerTask(), 2000, 4000);
     }
 
     @Override
@@ -265,15 +315,15 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
 
     }
 
-    public void getDetailFotoBengkel(final String bengkelID, int index){
-        StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_"+index);
-
+    public void getDetailFotoBengkel(final String bengkelID, final String numb){
+        StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_"+numb);
         final long ONE_MEGABYTE = 1024 * 1024;
         fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 Foto fotoBengkel = new Foto(bengkelID, bytes);
-//                fotobengkels.add(fotoBengkel);
+                fotoDetailBengkels.add(fotoBengkel);
+                setFotoBengkel(fotoDetailBengkels);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -396,6 +446,31 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    public class MyTimerTask extends TimerTask {
 
+        @Override
+        public void run() {
+            DetailBengkelActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    if(viewPager.getCurrentItem() == 0){
+                        viewPager.setCurrentItem(1);
+                    } else if(viewPager.getCurrentItem() == 1){
+                        viewPager.setCurrentItem(2);
+                    } else {
+                        viewPager.setCurrentItem(0);
+                    }
+
+                }
+            });
+
+        }
+    }
+
+    public void setFotoBengkel( List<Foto> fotoDetailBengkels){
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, fotoDetailBengkels);
+        viewPager.setAdapter(viewPagerAdapter);
+    }
 
 }

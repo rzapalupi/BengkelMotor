@@ -6,7 +6,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
 
         <ImageView
             android:id="@+id/imgList"
@@ -20,6 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imgList"
             android:text="Nama Bengkel"
+            android:layout_marginStart="8dp"
             android:textSize="18sp" />
 
         <TextView
@@ -29,6 +31,7 @@
             android:layout_below="@+id/txtNama"
             android:layout_toEndOf="@+id/imgList"
             android:text="Alamat"
+            android:layout_marginStart="8dp"
             android:textSize="14sp"/>
 
         <TextView
@@ -37,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imgList"
             android:layout_alignBottom="@+id/imgList"
+            android:layout_marginStart="8dp"
             android:text="4.3"
             android:textSize="18sp" />
         <ImageView
