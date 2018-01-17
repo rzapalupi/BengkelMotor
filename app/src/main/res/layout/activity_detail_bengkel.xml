@@ -13,7 +13,8 @@
         android:layout_margin="16dp"
         android:clickable="true"
         app:layout_anchor="@+id/ctolbar"
-        app:layout_anchorGravity="bottom|right|end"/>
+        app:layout_anchorGravity="bottom|right|end"
+        android:src="@drawable/ic_navigation_24dp"/>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

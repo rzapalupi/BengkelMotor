@@ -422,7 +422,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_review, popup.getMenu());
+        inflater.inflate(R.menu.menu_side, popup.getMenu());
         popup.show();
         popup.setOnMenuItemClickListener(this);
     }

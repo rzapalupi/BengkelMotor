@@ -86,8 +86,10 @@ public class ProfileActivity extends AppCompatActivity {
         mReviewBengkelRef.keepSynced(true);
 
         getCurrentUser();
+
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
+
 
 
     }
@@ -135,18 +137,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         mAuth.signOut();
         LoginManager.getInstance().logOut();
-    }
-
-    public ArrayList<Bengkel> getMyBengkels() {
-        return myBengkels;
-    }
-
-    public ArrayList<Bengkel> getMyReviewedBengkels() {
-        return myReviewedBengkels;
-    }
-
-    public ArrayList<ReviewBengkel> getMyReviews() {
-        return myReviews;
     }
 
     public void getDataMyBengkel(){
@@ -210,6 +200,24 @@ public class ProfileActivity extends AppCompatActivity {
         mReviewBengkelRef.addValueEventListener(valueEventListener);
     }
 
+    public void  getDataMyFotoBengkel(final String bengkelID) {
+        StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_0");
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Foto fotoBengkel = new Foto(bengkelID, bytes);
+                myfotobengkels.add(fotoBengkel);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
+
     public void getCurrentUser(){
         //get profile current user
         mAuth = FirebaseAuth.getInstance();
@@ -247,29 +255,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    // TODO: 12/19/2017 getDataMyFotoBengkel()  OK
-    public ArrayList<Foto> getMyfotobengkels() {
-        return myfotobengkels;
-    }
-
-    public void  getDataMyFotoBengkel(final String bengkelID) {
-        StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_0");
-
-        final long ONE_MEGABYTE = 1024 * 1024;
-        fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Foto fotoBengkel = new Foto(bengkelID, bytes);
-                myfotobengkels.add(fotoBengkel);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
-    }
-
     // TODO: 12/19/2017 getFotoBengkelReviewed()
 
     private void setupViewPager(ViewPager viewPager) {
@@ -280,6 +265,23 @@ public class ProfileActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    public ArrayList<Bengkel> getMyBengkels() {
+        return myBengkels;
+    }
+
+    public ArrayList<Bengkel> getMyReviewedBengkels() {
+        return myReviewedBengkels;
+    }
+
+    public ArrayList<ReviewBengkel> getMyReviews() {
+        return myReviews;
+    }
+
+    // TODO: 12/19/2017 getDataMyFotoBengkel()  OK
+    public ArrayList<Foto> getMyfotobengkels() {
+        return myfotobengkels;
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -287,4 +289,6 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intentReg);
         finish();
     }
+
+
 }

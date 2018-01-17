@@ -204,4 +204,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         scrim.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intentReg = new Intent(this, MainActivity.class);
+        startActivity(intentReg);
+        finish();
+    }
+
 }

@@ -12,13 +12,6 @@ public class Foto implements Parcelable {
     private String id;
     private byte[] foto;
 
-    public Foto(){}
-
-    public Foto(String id, byte[] foto) {
-        this.id = id;
-        this.foto = foto;
-    }
-
     public String getId() {
         return id;
     }
@@ -34,6 +27,13 @@ public class Foto implements Parcelable {
     public void setFoto(byte[] foto) {
         this.foto = foto;
     }
+
+    public Foto(String id, byte[] foto) {
+        this.id = id;
+        this.foto = foto;
+    }
+
+    public Foto(){}
 
 
     @Override
@@ -52,7 +52,7 @@ public class Foto implements Parcelable {
         this.foto = in.createByteArray();
     }
 
-    public static final Parcelable.Creator<Foto> CREATOR = new Parcelable.Creator<Foto>() {
+    public static final Creator<Foto> CREATOR = new Creator<Foto>() {
         @Override
         public Foto createFromParcel(Parcel source) {
             return new Foto(source);

@@ -41,6 +41,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         return view == object;
     }
 
+
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
 
@@ -52,9 +53,6 @@ public class ViewPagerAdapter extends PagerAdapter {
         byte[] bytes = fotoDetailBengkel.getFoto();
         Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         imageView.setImageBitmap(bmp);
-
-
-
         view.setOnClickListener(    new View.OnClickListener() {
             @Override
             public void onClick(View v) {

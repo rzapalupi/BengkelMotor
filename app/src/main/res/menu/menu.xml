@@ -24,7 +24,7 @@
             app:showAsAction="never"/>
         <item
             android:id="@+id/menu_profile"
-            android:icon="@drawable/ic_person_black_24dp"
+            android:icon="@drawable/ic_person_24dp"
             android:title=""
             app:showAsAction="ifRoom" />
     </group>

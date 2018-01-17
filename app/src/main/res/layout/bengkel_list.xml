@@ -9,11 +9,18 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp">
 
+        <ImageButton
+            android:id="@+id/btnMenuBengkel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/actionOverflowButtonStyle"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible"/>
+
         <ImageView
             android:id="@+id/imgList"
             android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_height="100dp" />
 
         <TextView
             android:id="@+id/txtNama"
@@ -46,7 +53,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_star_black_24dp"
+            android:src="@drawable/ic_star_24dp"
             android:layout_toEndOf="@+id/txtRating"
             android:layout_alignBottom="@+id/imgList"/>
         <TextView

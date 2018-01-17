@@ -43,6 +43,8 @@
     <string name="senin">Senin</string>
     <string name="no_telepon_bengkel">No Telepon Bengkel</string>
     <string name="alamat_bengkel">Alamat Bengkel</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
 
 
 </resources>

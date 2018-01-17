@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -68,6 +69,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     TextView tJamBuka, tSenin, tSelasa, tRabu, tKamis, tJumat, tSabtu, tMinggu;
     ImageView imgSnapMap, imgFoto1, imgFoto2, imgFoto3;
     String nama, alamat, telepon, uid, key;
+    HashMap<String, String> hashMap;
     RelativeLayout ly;
     double latitude, longitude;
     HashMap<String, String> jambuka = new HashMap<>();
@@ -128,7 +130,6 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         imgFoto3        = (ImageView) findViewById(R.id.imgFoto3);
         ly              = (RelativeLayout) findViewById(R.id.addbengkelLayout);
 
-
         edtStartH1.setOnClickListener(this);
         edtStartH2.setOnClickListener(this);
         edtStartH3.setOnClickListener(this);
@@ -152,6 +153,51 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
         mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //Edit Bengkel
+        Bengkel editBengkel = getIntent().getParcelableExtra("EDIT");
+        if (editBengkel != null){
+            edtNamaBengkel.setText(editBengkel.getbNama());
+            edtAlamat.setText(editBengkel.getbAlamat());
+            edtTelepon.setText(editBengkel.getbTelepon());
+            hashMap = editBengkel.getbJamBuka();
+            String bengkelID = editBengkel.getbID();
+            String day[]= {"Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"};
+            CheckBox cb[] = {cbH1,cbH2,cbH3,cbH4,cbH5,cbH6,cbH7};
+            EditText edtStart[] = {edtStartH1,edtStartH2,edtStartH3,edtStartH4,edtStartH5,edtStartH6,edtStartH7};
+            EditText edtEnd[] = {edtEndH1,edtEndH2,edtEndH3,edtEndH4,edtEndH5,edtEndH6,edtEndH7,};
+            ImageView img[] = {imgFoto1,imgFoto2,imgFoto3};
+
+            for(int i=0; i<=6; i++) {
+                for (Map.Entry<String, String> entry : hashMap.entrySet()) {
+                    String hari = entry.getKey();
+                    String jam = entry.getValue();
+                    if (hari.equals(day[i])) {
+                        if (!jam.equals("Tutup")) {
+                            cb[i].setChecked(true);
+                            edtStart[i].setText(jam.substring(0, 5));
+                            edtStart[i].setEnabled(true);
+                            edtEnd[i].setText(jam.substring(8, 13));
+                            edtEnd[i].setEnabled(true);
+                        }
+                    }
+                }
+            }
+            latitude = editBengkel.getbLatitude();
+            longitude = editBengkel.getbLongitude();
+            setPeta(latitude,longitude);
+
+            for (int j=0; j<3; j++){
+                String numb = String.valueOf(j);
+                getEditFotoBengkel(bengkelID,numb,img[j]);
+            }
+
+        }
+
+
+
+
+
 
     }
 
@@ -179,7 +225,6 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                     telepon      = String.valueOf(edtTelepon.getText());
                     uid          = user.getUid();
 
-                    //Toast.makeText(this, "Show" + latitude + " - " + longitude , Toast.LENGTH_SHORT).show();
                     jambuka.put("Senin",    edtStartH1.getText().toString() + " - " + edtEndH1.getText().toString());
                     jambuka.put("Selasa",   edtStartH2.getText().toString() + " - " + edtEndH2.getText().toString());
                     jambuka.put("Rabu",     edtStartH3.getText().toString() + " - " + edtEndH3.getText().toString());
@@ -196,6 +241,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                         }
                     }
                     Log.e(TAG, String.valueOf(jambuka));
+
                     addBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid);
                     for(int x=0; x<3; x++){
                         if(index[x] == 1){
@@ -203,7 +249,6 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                         }
                     }
                     Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
-
                     super.onBackPressed();
                     finish();
                 }
@@ -378,10 +423,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 lokasi = true;
                 btnSetLokasi.setError(null);
             }
-            int layWidth = ly.getWidth();
-            String url = "https://maps.googleapis.com/maps/api/staticmap?markers="
-                    + latitude + "," + longitude + "&zoom=17&size=" + layWidth + "x250";
-            Glide.with(this).load(url).into(imgSnapMap);
+            setPeta(latitude,longitude);
         } else if (reqCode == 1){
             if (resultCode == RESULT_OK) {
                 index[0] = 1;
@@ -686,6 +728,30 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 Log.e(TAG, "onSuccess: " + downloadUrl );
+            }
+        });
+    }
+
+    public void setPeta(double latitude, double longitude){
+        int layWidth = ly.getWidth();
+        String url = "https://maps.googleapis.com/maps/api/staticmap?markers="
+                + latitude + "," + longitude + "&zoom=17&size=" + layWidth + "x250";
+        Glide.with(this).load(url).into(imgSnapMap);
+    }
+
+    public void getEditFotoBengkel(final String bengkelID, final String numb, final ImageView img){
+        StorageReference fotoRef         = FirebaseStorage.getInstance().getReference("FotoBengkel").child(bengkelID).child(bengkelID+"_"+numb);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                img.setImageBitmap(bmp);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
             }
         });
     }
