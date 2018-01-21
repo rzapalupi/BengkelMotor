@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -19,16 +21,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.Foto;
 import com.efpro.bengkelmotor_01.Fragment.MapFragment;
 import com.efpro.bengkelmotor_01.Fragment.SplashFragment;
-import com.efpro.bengkelmotor_01.Haversine;
-import com.efpro.bengkelmotor_01.PermissionUtils;
+import com.efpro.bengkelmotor_01.Helper.Haversine;
+import com.efpro.bengkelmotor_01.Helper.PermissionUtils;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
+import com.efpro.bengkelmotor_01.Model.Foto;
 import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -106,6 +109,18 @@ public class MainActivity extends AppCompatActivity implements
 
         enableMyLocation();
 
+        if(!splashFlag){
+            SplashFragment splashFragment = new SplashFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.mainLayout, splashFragment).commit();
+            splashFlag = true;
+        } else {
+            MapFragment mapFragment = new MapFragment();
+            FragmentTransaction ftmap = getSupportFragmentManager().beginTransaction();
+            ftmap.replace(R.id.mainLayout, mapFragment).commit();
+        }
+
+
     }
 
     @Override
@@ -122,8 +137,8 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_about:
-//                Intent intentAbout = new Intent(this, AboutActivity.class);
-//                startActivity(intentAbout);
+                Intent intentAbout = new Intent(this, AboutActivity.class);
+                startActivity(intentAbout);
             break;
             case R.id.menu_profile:
                 Intent intentProfile = new Intent(this, ProfileActivity.class);
@@ -131,8 +146,8 @@ public class MainActivity extends AppCompatActivity implements
                 finish();
             break;
             case R.id.menu_tips:
-//                Intent intentTips = new Intent(this, TipsActivity.class);
-//                startActivity(intentTips);
+                Intent intentTips = new Intent(this, TipsActivity.class);
+                startActivity(intentTips);
             break;
         }
         return true;
@@ -193,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         Log.d("activity", "RLOC: Location USER "+latitude+" "+longitude);
-
     }
 
     @Override
@@ -229,7 +243,12 @@ public class MainActivity extends AppCompatActivity implements
         } else  {
             // Access to the location has been granted to the app.
             getLocation();
-            getDatabase();
+            if(isNetworkAvailable(getApplicationContext())) {
+                getDatabase();
+            }else {
+                bengkels.clear();
+                getCache();
+            }
         }
     }
 
@@ -259,14 +278,6 @@ public class MainActivity extends AppCompatActivity implements
             showMissingPermissionError();
             mPermissionDenied = false;
         }
-    }
-
-    /**
-     * Displays a dialog with error message explaining that the location permission is missing.
-     */
-    private void showMissingPermissionError() {
-        PermissionUtils.PermissionDeniedDialog
-                .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
     protected void onResume() {
@@ -320,35 +331,56 @@ public class MainActivity extends AppCompatActivity implements
         };
         mBengkelRef.addValueEventListener(valueEventListener);
 
-        if(!splashFlag){
-            SplashFragment splashFragment = new SplashFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.mainLayout, splashFragment).commit();
-            splashFlag = true;
-        } else {
-            MapFragment mapFragment = new MapFragment();
-            FragmentTransaction ftmap = getSupportFragmentManager().beginTransaction();
-            ftmap.replace(R.id.mainLayout, mapFragment).commit();
-        }
-
     }
 
-    @Override
-    public void onBackPressed() {
-        if(backpress){
-            super.onBackPressed();
-        } else {
-            Toast.makeText(this, "Tekan lagi untuk keluar", Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    backpress = false;
-                }
-            }, 3000);
-            backpress = true;
-        }
-    }
+    public void getCache(){
+        mBengkelRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
+                /**--- with radius, for show bengkel location which in radius---**/
+                    Bengkel bengkel = dataSnapshot.getValue(Bengkel.class);
+                    bengkelID = dataSnapshot.getKey();
+                    if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
+                            bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
+                        double haversine = new Haversine().Formula(latitude,longitude,bengkel.getbLatitude(),bengkel.getbLongitude());
+                        bengkel.setbJarak(haversine);
+                        bengkels.add(bengkel);
+                        getDataFotoBengkel(bengkelID);
+                    }
+
+                //Sorting jarak terdekat
+                Collections.sort(bengkels, new Comparator<Bengkel>() {
+                    @Override
+                    public int compare(Bengkel o1, Bengkel o2) {
+                        return Double.compare(o1.getbJarak(), o2.getbJarak());
+                    }
+                });
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
     public void getDataFotoBengkel(final String bengkelID){
         StorageReference fotoRef = mStorageRef.child(bengkelID).child(bengkelID+"_0");
@@ -366,5 +398,35 @@ public class MainActivity extends AppCompatActivity implements
                 // Handle any errors
             }
         });
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
+    /**
+     * Displays a dialog with error message explaining that the location permission is missing.
+     */
+    private void showMissingPermissionError() {
+        PermissionUtils.PermissionDeniedDialog
+                .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backpress){
+            super.onBackPressed();
+        } else {
+            Toast.makeText(this, "Tekan lagi untuk keluar", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    backpress = false;
+                }
+            }, 3000);
+            backpress = true;
+        }
     }
 }

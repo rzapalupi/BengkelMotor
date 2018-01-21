@@ -15,8 +15,8 @@ import android.widget.ListView;
 import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.MainActivity;
 import com.efpro.bengkelmotor_01.Adapter.BengkelAdapter;
-import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.Foto;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
+import com.efpro.bengkelmotor_01.Model.Foto;
 import com.efpro.bengkelmotor_01.R;
 
 import java.util.ArrayList;

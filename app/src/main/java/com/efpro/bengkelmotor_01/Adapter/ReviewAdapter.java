@@ -18,9 +18,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.efpro.bengkelmotor_01.Bengkel;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
 import com.efpro.bengkelmotor_01.R;
-import com.efpro.bengkelmotor_01.ReviewBengkel;
+import com.efpro.bengkelmotor_01.Model.ReviewBengkel;
 
 import java.util.ArrayList;
 import java.util.List;

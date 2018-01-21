@@ -8,14 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.ProfileActivity;
 import com.efpro.bengkelmotor_01.Adapter.BengkelAdapter;
-import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.Foto;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
+import com.efpro.bengkelmotor_01.Model.Foto;
 import com.efpro.bengkelmotor_01.R;
 
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ public class MyBengkelFragment extends Fragment implements AdapterView.OnItemCli
     BengkelAdapter bengkelAdapter;
     ArrayList<Bengkel> mMyBengkels;
     ArrayList<Foto> mMyFotoBengkels;
-    ImageButton btnMenuReview;
     View mView;
 
     public MyBengkelFragment() {

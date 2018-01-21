@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -19,12 +20,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.efpro.bengkelmotor_01.Adapter.TabsPagerAdapter;
-import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.Foto;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
+import com.efpro.bengkelmotor_01.Model.Foto;
 import com.efpro.bengkelmotor_01.Fragment.MyBengkelFragment;
 import com.efpro.bengkelmotor_01.Fragment.MyReviewFragment;
 import com.efpro.bengkelmotor_01.R;
-import com.efpro.bengkelmotor_01.ReviewBengkel;
+import com.efpro.bengkelmotor_01.Model.ReviewBengkel;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -88,11 +89,18 @@ public class ProfileActivity extends AppCompatActivity {
         getCurrentUser();
 
         tabLayout.setupWithViewPager(viewPager);
-        setupViewPager(viewPager);
 
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setupViewPager(viewPager);
+            }
+        },1000);
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -290,5 +298,10 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
+    protected void onResume() {
+        super.onResume();
+        tabLayout.setupWithViewPager(viewPager);
+        setupViewPager(viewPager);
+    }
 
 }

@@ -9,31 +9,40 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.efpro.bengkelmotor_01.Foto;
+import com.efpro.bengkelmotor_01.Model.Foto;
 import com.efpro.bengkelmotor_01.R;
 
 import java.util.List;
 
-/**
- * Created by Sanket on 27-Feb-17.
- */
 
 public class ViewPagerAdapter extends PagerAdapter {
 
     private Context context;
     private LayoutInflater layoutInflater;
     private List<Foto> mfotoDetailBengkels;
+    private Integer [] images = {R.drawable.slide1,R.drawable.slide2,R.drawable.slide3};
+    int flag;
+
 
     public ViewPagerAdapter(Context context, List<Foto> mfotoDetailBengkels) {
         this.context = context;
         this.mfotoDetailBengkels = mfotoDetailBengkels;
+        flag = 0;
+    }
+
+    public ViewPagerAdapter(Context context) {
+        this.context = context;
+        flag = 1;
     }
 
     @Override
     public int getCount() {
-        return mfotoDetailBengkels.size();
+        if(flag==0){
+            return mfotoDetailBengkels.size();
+        } else {
+            return images.length;
+        }
     }
 
     @Override
@@ -44,33 +53,27 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.foto_bengkel, null);
-        ImageView imageView = (ImageView) view.findViewById(R.id.imgFotoBengkel);
 
-        Foto fotoDetailBengkel = mfotoDetailBengkels.get(position);
-        byte[] bytes = fotoDetailBengkel.getFoto();
-        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        imageView.setImageBitmap(bmp);
-        view.setOnClickListener(    new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(flag==0){
+            View view = layoutInflater.inflate(R.layout.foto_bengkel, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.imgFotoBengkel);
 
-                if(position == 0){
-                    Toast.makeText(context, "Slide 1 Clicked", Toast.LENGTH_SHORT).show();
-                } else if(position == 1){
-                    Toast.makeText(context, "Slide 2 Clicked", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, "Slide 3 Clicked", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
-        ViewPager vp = (ViewPager) container;
-        vp.addView(view, 0);
-        return view;
+            Foto fotoDetailBengkel = mfotoDetailBengkels.get(position);
+            byte[] bytes = fotoDetailBengkel.getFoto();
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            imageView.setImageBitmap(bmp);
+            ViewPager vp = (ViewPager) container;
+            vp.addView(view, 0);
+            return view;
+        } else{
+            View view = layoutInflater.inflate(R.layout.foto_tips, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.imgFotoTips);
+            imageView.setImageResource(images[position]);
+            ViewPager vp = (ViewPager) container;
+            vp.addView(view, 0);
+            return view;
+        }
 
     }
 

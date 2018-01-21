@@ -21,8 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.efpro.bengkelmotor_01.Activity.AddBengkelActivity;
-import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.Foto;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
+import com.efpro.bengkelmotor_01.Model.Foto;
 import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,11 +42,12 @@ public class BengkelAdapter extends ArrayAdapter<Bengkel> {
 
 
     ArrayList<Foto> mFotoBengkels;
-    ImageButton btnMenuReview;
+    List<Bengkel> mBengkel;
 
     public BengkelAdapter(@NonNull Context context, @NonNull List<Bengkel> objects, ArrayList<Foto> mFotoBengkels) {
         super(context, 0, objects);
         this.mFotoBengkels = mFotoBengkels;
+        this.mBengkel = objects;
     }
 
 
@@ -89,7 +90,7 @@ public class BengkelAdapter extends ArrayAdapter<Bengkel> {
                 btnMenuBengkel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        PopupMenu popup = new PopupMenu(getContext(), v);
+                        final PopupMenu popup = new PopupMenu(getContext(), v);
                         MenuInflater inflater = popup.getMenuInflater();
                         inflater.inflate(R.menu.menu_side, popup.getMenu());
                         popup.show();
@@ -101,35 +102,22 @@ public class BengkelAdapter extends ArrayAdapter<Bengkel> {
                                         Intent intent = new Intent(getContext(), AddBengkelActivity.class);
                                         intent.putExtra("EDIT",bengkel);
                                         getContext().startActivity(intent);
-                                        Toast.makeText(getContext(), "edit", Toast.LENGTH_SHORT).show();
                                         return true;
                                     case R.id.menu_delete:
-                                        final DatabaseReference mBengkelRef =FirebaseDatabase.getInstance().getReference("ListBengkel/" + bengkel.getbID());
-                                        final DatabaseReference mReviewBengkelRef =FirebaseDatabase.getInstance().getReference("ReviewBengkel/" + bengkel.getbID());
-                                        final StorageReference mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel/" + bengkel.getbID() +"/");
+
                                         new AlertDialog.Builder(getContext())
-                                        .setTitle("Delete Confirmation")
-                                        .setMessage("Anda yakin ingin menghapus " + bengkel.getbNama() +" ?")
+                                        .setMessage("Apakah Anda yakin ingin menghapus " + bengkel.getbNama() +" ?")
                                         // Add the buttons
                                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 // User clicked OK button
-                                                mStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        // File deleted successfully
-                                                        mBengkelRef.removeValue();
-                                                        mReviewBengkelRef.removeValue();
-                                                        mFotoBengkels.remove(position);
-                                                        Toast.makeText(getContext(), "Bengkel Berhasil dihapus", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception exception) {
-                                                        // Uh-oh, an error occurred!
-                                                        Toast.makeText(getContext(), "Bengkel gagal dihapus", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
+                                                for(int index=0; index<3; index++){
+                                                    String numb = String.valueOf(index);
+                                                    deleteBengkel(bengkel.getbID(), numb);
+                                                }
+                                                mBengkel.remove(position);
+                                                mFotoBengkels.remove(position);
+                                                notifyDataSetChanged();
                                                 dialog.dismiss();
                                             }
                                         })
@@ -156,6 +144,30 @@ public class BengkelAdapter extends ArrayAdapter<Bengkel> {
         }
 
         return convertView;
+    }
+
+    public void deleteBengkel(String bengkelID, final String numb){
+        final DatabaseReference mBengkelRef =FirebaseDatabase.getInstance().getReference("ListBengkel/" + bengkelID);
+        final DatabaseReference mReviewBengkelRef =FirebaseDatabase.getInstance().getReference("ReviewBengkel/" + bengkelID);
+        final StorageReference mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel").child(bengkelID).child(bengkelID+"_"+numb);
+        final String flag = numb;
+        mStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // File deleted successfully
+                mBengkelRef.removeValue();
+                mReviewBengkelRef.removeValue();
+                if (flag.equals("2")) {
+                    Toast.makeText(getContext(), "Bengkel Berhasil dihapus", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+                Toast.makeText(getContext(), "Bengkel gagal dihapus", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
   

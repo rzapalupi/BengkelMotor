@@ -1,6 +1,8 @@
 package com.efpro.bengkelmotor_01.Activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -9,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -34,11 +37,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.efpro.bengkelmotor_01.Adapter.ReviewAdapter;
 import com.efpro.bengkelmotor_01.Adapter.ViewPagerAdapter;
-import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.ExpandableHeightListView;
-import com.efpro.bengkelmotor_01.Foto;
+import com.efpro.bengkelmotor_01.Helper.ExpandableHeightListView;
+import com.efpro.bengkelmotor_01.Helper.PermissionUtils;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
+import com.efpro.bengkelmotor_01.Model.Foto;
+import com.efpro.bengkelmotor_01.Model.ReviewBengkel;
 import com.efpro.bengkelmotor_01.R;
-import com.efpro.bengkelmotor_01.ReviewBengkel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,23 +64,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimerTask;
 import java.util.TreeMap;
 
 public class DetailBengkelActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final String TAG = "DetailActivity";
+    private static final int CALL_PHONE_REQUEST_CODE = 7;
     ExpandableHeightListView reviewListView;
     ReviewAdapter reviewAdapter;
     ArrayList<ReviewBengkel> mReviewBengkels = new ArrayList<>();
     List<Foto> fotoDetailBengkels = new ArrayList<>();
     FloatingActionButton fab_navigation;
-    TextView    txtDAlamat, txtDHari, txtDJam, txtDToday, txtDHour, txtDTelepon,
-                txtMyUsername, txtMyComment, txtPostDate;
-    EditText    edtReview;
+    TextView txtDAlamat, txtDHari, txtDJam, txtDToday, txtDHour, txtDTelepon,
+            txtMyUsername, txtMyComment, txtPostDate;
+    EditText edtReview;
     ImageView imgMyProfile;
-    Button  btnSubmit;
-    ImageButton btnMenuReview;
+    Button btnSubmit;
+    ImageButton btnMenuReview, btnCall;
     RatingBar rtbMyRate;
     AppBarLayout Appbar;
     CollapsingToolbarLayout CoolToolbar;
@@ -84,7 +88,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
     Intent mapIntent;
     Uri gmmIntentUri, photoUrl;
     String latlong, bengkelID, reviewBengkelID, uid, username, date, comment, sPhotoUrl;
-    int rate, div ;
+    int rate, div;
     double sumRate = 0;
     HashMap<String, String> hashMap;
     Map<Date, String> sortedMap = new TreeMap<Date, String>();
@@ -118,10 +122,11 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         btnSubmit           = (Button) findViewById(R.id.btnSubmit);
         imgMyProfile        = (ImageView) findViewById(R.id.imgMyProfile);
         btnMenuReview       = (ImageButton) findViewById(R.id.btnMenuReview);
+        btnCall             = (ImageButton) findViewById(R.id.btnCall);
         rtbMyRate           = (RatingBar) findViewById(R.id.rtbMyRate);
         reviewListView      = (ExpandableHeightListView) findViewById(R.id.reviewListView);
-        Appbar              = (AppBarLayout)findViewById(R.id.appbar);
-        CoolToolbar         = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
+        Appbar              = (AppBarLayout) findViewById(R.id.appbar);
+        CoolToolbar         = (CollapsingToolbarLayout) findViewById(R.id.ctolbar);
         toolbar             = (Toolbar) findViewById(R.id.toolbar);
         viewPager           = (ViewPager) findViewById(R.id.viewPager);
         sliderDotspanel     = (LinearLayout) findViewById(R.id.SliderDots);
@@ -130,14 +135,15 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         setSupportActionBar(toolbar);
         reviewListView.setExpanded(true);
         btnSubmit.setOnClickListener(this);
+        btnCall.setOnClickListener(this);
         fab_navigation.setOnClickListener(this);
 
         getCurrentUserID();
 
         //set database review from firebase
-        mReviewBengkelRef   = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
-        mBengkelRef         = FirebaseDatabase.getInstance().getReference("ListBengkel");
-        mStorageRef         = FirebaseStorage.getInstance().getReference("FotoBengkel");
+        mReviewBengkelRef = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
+        mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");
+        mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         mReviewBengkelRef.keepSynced(true);
         mBengkelRef.keepSynced(true);
 
@@ -151,21 +157,19 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         CoolToolbar.setCollapsedTitleTextColor(Color.WHITE);
         CoolToolbar.setExpandedTitleColor(Color.WHITE);
 
-        for(int index=0; index<3; index++){
+        for (int index = 0; index < 3; index++) {
             String numb = String.valueOf(index);
             getDetailFotoBengkel(bengkelID, numb);
         }
 
         dots = new ImageView[dotscount];
-        for(int i = 0; i < dotscount; i++){
+        for (int i = 0; i < dotscount; i++) {
 
             dots[i] = new ImageView(this);
             dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
             params.setMargins(8, 0, 8, 0);
-
             sliderDotspanel.addView(dots[i], params);
 
         }
@@ -173,23 +177,18 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
-
-                for(int i = 0; i< dotscount; i++){
+                for (int i = 0; i < dotscount; i++) {
                     dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
                 }
-
                 dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
@@ -199,7 +198,7 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         Appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (Math.abs(verticalOffset) > 200){
+                if (Math.abs(verticalOffset) > 200) {
                     ExpandedActionBar = false;
                     invalidateOptionsMenu();
                 } else {
@@ -209,8 +208,6 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
             }
         });
 
-//        Timer timer = new Timer();
-//        timer.scheduleAtFixedRate(new MyTimerTask(), 2000, 4000);
     }
 
     @Override
@@ -230,20 +227,38 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
                             Toast.LENGTH_LONG).show();
                 }
                 break;
-                case R.id.btnSubmit:
+            case R.id.btnSubmit:
                 //do something
                 comment = String.valueOf(edtReview.getText());
                 rate = (int) rtbMyRate.getRating();
                 SimpleDateFormat postDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("in", "ID", "ID"));
                 Calendar c = Calendar.getInstance();
                 date = postDateFormat.format(c.getTime());
-                if (comment.isEmpty() || rate == 0){
+                if (comment.isEmpty() || rate == 0) {
                     Toast.makeText(this, "Silahkan isi nilai atau ulasan anda", Toast.LENGTH_SHORT).show();
                 } else {
                     addReview(username, comment, rate, date, sPhotoUrl);
                     getDataReview();
                 }
-                break;
+            break;
+            case R.id.btnCall:
+                makeCall();
+            break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == CALL_PHONE_REQUEST_CODE) {
+            if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                    Manifest.permission.CALL_PHONE)) {
+                makeCall();
+            } else {
+//                // Display the missing permission error dialog when the fragments resume.
+            }
+        }else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -446,31 +461,20 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    public class MyTimerTask extends TimerTask {
-
-        @Override
-        public void run() {
-            DetailBengkelActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                    if(viewPager.getCurrentItem() == 0){
-                        viewPager.setCurrentItem(1);
-                    } else if(viewPager.getCurrentItem() == 1){
-                        viewPager.setCurrentItem(2);
-                    } else {
-                        viewPager.setCurrentItem(0);
-                    }
-
-                }
-            });
-
-        }
-    }
-
     public void setFotoBengkel( List<Foto> fotoDetailBengkels){
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, fotoDetailBengkels);
         viewPager.setAdapter(viewPagerAdapter);
+    }
+
+    public void makeCall(){
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:"+txtDTelepon.getText()));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            PermissionUtils.requestPermission3(this, CALL_PHONE_REQUEST_CODE,
+                    Manifest.permission.CALL_PHONE, true);
+        } else {
+            startActivity(callIntent);
+        }
     }
 
 }

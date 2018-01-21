@@ -6,9 +6,9 @@
 
     <ImageView
         android:id="@+id/imgSplash"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="209dp"
+        android:layout_height="285dp"
         android:layout_gravity="center"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/ic_cari_bengkel" />
 
 </FrameLayout>

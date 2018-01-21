@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -22,14 +23,15 @@ import android.widget.TextView;
 
 import com.efpro.bengkelmotor_01.Activity.DetailBengkelActivity;
 import com.efpro.bengkelmotor_01.Activity.MainActivity;
-import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.Foto;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
+import com.efpro.bengkelmotor_01.Model.Foto;
 import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -127,10 +129,16 @@ public class MapFragment extends Fragment
             e.printStackTrace();
         }
 
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.ic_marker_blue);
+        Bitmap b=bitmapdraw.getBitmap();
+        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 128, 128, false);
         //Add marker for each bengkel
         for (Bengkel bengkel:tmpBengkel) {
             LatLng bLocation = new LatLng(bengkel.getbLatitude(), bengkel.getbLongitude());
-            mGoogleMap.addMarker(new MarkerOptions().position(bLocation).title(bengkel.getbNama()));
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(bLocation)
+                    .title(bengkel.getbNama())
+                    .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
             Log.e("Nama", bengkel.getbNama());
         }
 

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -27,14 +28,15 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.efpro.bengkelmotor_01.Bengkel;
-import com.efpro.bengkelmotor_01.PermissionUtils;
+import com.efpro.bengkelmotor_01.Model.Bengkel;
+import com.efpro.bengkelmotor_01.Helper.PermissionUtils;
 import com.efpro.bengkelmotor_01.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,7 +70,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     CheckBox cbH1, cbH2, cbH3, cbH4, cbH5, cbH6, cbH7;
     TextView tJamBuka, tSenin, tSelasa, tRabu, tKamis, tJumat, tSabtu, tMinggu;
     ImageView imgSnapMap, imgFoto1, imgFoto2, imgFoto3;
-    String nama, alamat, telepon, uid, key;
+    String nama, alamat, telepon, uid, key, bid;
     HashMap<String, String> hashMap;
     RelativeLayout ly;
     double latitude, longitude;
@@ -79,6 +81,7 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     boolean lokasi = false;
     boolean pic = false;
     boolean result = false;
+    boolean edit = false;
 
     private DatabaseReference mBengkelRef;
     private StorageReference mStorageRef;
@@ -154,14 +157,18 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+
         //Edit Bengkel
         Bengkel editBengkel = getIntent().getParcelableExtra("EDIT");
         if (editBengkel != null){
+            getSupportActionBar().setTitle("Edit Bengkel");
+            btnAddBengkel.setText("UPDATE BENGKEL");
+            edit = true;
             edtNamaBengkel.setText(editBengkel.getbNama());
             edtAlamat.setText(editBengkel.getbAlamat());
             edtTelepon.setText(editBengkel.getbTelepon());
             hashMap = editBengkel.getbJamBuka();
-            String bengkelID = editBengkel.getbID();
+            bid = editBengkel.getbID();
             String day[]= {"Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"};
             CheckBox cb[] = {cbH1,cbH2,cbH3,cbH4,cbH5,cbH6,cbH7};
             EditText edtStart[] = {edtStartH1,edtStartH2,edtStartH3,edtStartH4,edtStartH5,edtStartH6,edtStartH7};
@@ -185,19 +192,20 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
             }
             latitude = editBengkel.getbLatitude();
             longitude = editBengkel.getbLongitude();
-            setPeta(latitude,longitude);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setPeta(latitude,longitude);
+                    lokasi = true;
+                }
+            },1000);
 
             for (int j=0; j<3; j++){
                 String numb = String.valueOf(j);
-                getEditFotoBengkel(bengkelID,numb,img[j]);
+                getEditFotoBengkel(bid,numb,img[j]);
             }
 
         }
-
-
-
-
-
 
     }
 
@@ -205,10 +213,19 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnSetLokasi:
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 try {
-                    Intent intent = builder.build(this);
-                    startActivityForResult(intent, PLACE_PICKER_REQUEST);
+                    if(edit){
+                        LatLngBounds latLngBounds =  new LatLngBounds(
+                                new LatLng(latitude,longitude), new LatLng(latitude,longitude));
+                        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder().setLatLngBounds(latLngBounds);
+                        Intent intent = builder.build(this);
+                        startActivityForResult(intent, PLACE_PICKER_REQUEST);
+                    } else {
+                        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                        Intent intent = builder.build(this);
+                        startActivityForResult(intent, PLACE_PICKER_REQUEST);
+                    }
+
                 } catch (GooglePlayServicesRepairableException e) {
                     e.printStackTrace();
                 } catch (GooglePlayServicesNotAvailableException e) {
@@ -242,13 +259,26 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
                     }
                     Log.e(TAG, String.valueOf(jambuka));
 
-                    addBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid);
-                    for(int x=0; x<3; x++){
-                        if(index[x] == 1){
-                            uploadFoto(imgFoto[x],x);
+                    if(edit){
+                        //update data bengkel
+                        updateBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid, bid);
+                        for(int x=0; x<3; x++){
+                            if(index[x] == 1){
+                                uploadFoto(imgFoto[x],x,bid);
+                            }
                         }
+                        Toast.makeText(this, "Bengkel Berhasil di edit", Toast.LENGTH_SHORT).show();
+                    } else {
+                        //tambah data bengkel
+                        key = mBengkelRef.push().getKey();
+                        updateBengkel(nama, alamat, telepon, latitude, longitude, jambuka, uid, key);
+                        for(int x=0; x<3; x++){
+                            if(index[x] == 1){
+                                uploadFoto(imgFoto[x],x,key);
+                            }
+                        }
+                        Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
                     }
-                    Toast.makeText(this, "Bengkel Berhasil di daftar", Toast.LENGTH_SHORT).show();
                     super.onBackPressed();
                     finish();
                 }
@@ -412,7 +442,6 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -454,11 +483,10 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    public void addBengkel(String nama, String alamat, String telepon,
-                           double latitude, double longitude, HashMap<String, String> jambuka, String uid){
-        key = mBengkelRef.push().getKey();
-        Bengkel bengkel = new Bengkel(nama,alamat,telepon,latitude,longitude, jambuka, uid, key);
-        mBengkelRef.child(key).setValue(bengkel);
+    public void updateBengkel(String nama, String alamat, String telepon,
+                           double latitude, double longitude, HashMap<String, String> jambuka, String uid, String bid){
+        Bengkel bengkel = new Bengkel(nama,alamat,telepon,latitude,longitude, jambuka, uid, bid);
+        mBengkelRef.child(bid).setValue(bengkel);
     }
 
     public void setTime (final EditText edtText){
@@ -587,6 +615,18 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
             tJamBuka.setError(setError);
             check = true;;
         }
+
+        int checkImage = 0;
+        for(int x=0; x<3; x++){
+            if(index[x] == 0){
+                checkImage++;
+            }
+        }
+        if(checkImage > 0){
+            Toast.makeText(this, "Lengkapi Foto Bengkel", Toast.LENGTH_SHORT).show();
+        }
+
+
         return check;
     }
 
@@ -706,8 +746,8 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         startActivityForResult(takePicture, reqCode);
     }
 
-    public void uploadFoto(ImageView imageView, int index){
-        StorageReference bengkelIDRef = mStorageRef.child(key).child(key +"_"+ index);
+    public void uploadFoto(ImageView imageView, int index, String bid){
+        StorageReference bengkelIDRef = mStorageRef.child(bid).child(bid +"_"+ index);
 
         imageView.setDrawingCacheEnabled(true);
         imageView.buildDrawingCache();
@@ -736,16 +776,17 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         int layWidth = ly.getWidth();
         String url = "https://maps.googleapis.com/maps/api/staticmap?markers="
                 + latitude + "," + longitude + "&zoom=17&size=" + layWidth + "x250";
-        Glide.with(this).load(url).into(imgSnapMap);
+        Glide.with(this).asBitmap().load(url).into(imgSnapMap);
     }
 
-    public void getEditFotoBengkel(final String bengkelID, final String numb, final ImageView img){
+    public void getEditFotoBengkel(String bengkelID, String numb, final ImageView img){
         StorageReference fotoRef         = FirebaseStorage.getInstance().getReference("FotoBengkel").child(bengkelID).child(bengkelID+"_"+numb);
         final long ONE_MEGABYTE = 1024 * 1024;
         fotoRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                img.setPadding(0,0,0,0);
                 img.setImageBitmap(bmp);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -756,4 +797,27 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        if(edit){
+            new AlertDialog.Builder(this)
+                    .setMessage("Anda belum selesai mengubah data bengkel. Apakah Anda yakin ingin keluar?")
+                    // Add the buttons
+                    .setPositiveButton("KELUAR", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        } else {
+            super.onBackPressed();
+        }
+
+    }
 }
