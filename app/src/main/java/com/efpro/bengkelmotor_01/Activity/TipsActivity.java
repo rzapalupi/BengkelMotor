@@ -10,9 +10,6 @@ import android.widget.LinearLayout;
 import com.efpro.bengkelmotor_01.Adapter.ViewPagerAdapter;
 import com.efpro.bengkelmotor_01.R;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class TipsActivity extends AppCompatActivity {
 
     ViewPager viewPager;
@@ -61,29 +58,6 @@ public class TipsActivity extends AppCompatActivity {
 
             }
         });
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new MyTimerTask(), 2000, 4000);
-
-    }
-
-    public class MyTimerTask extends TimerTask {
-
-        @Override
-        public void run() {
-            TipsActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(viewPager.getCurrentItem() == 0){
-                        viewPager.setCurrentItem(1);
-                    } else if(viewPager.getCurrentItem() == 1){
-                        viewPager.setCurrentItem(2);
-                    } else {
-                        viewPager.setCurrentItem(0);
-                    }
-                }
-            });
-        }
     }
 
 }

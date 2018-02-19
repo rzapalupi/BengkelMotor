@@ -64,10 +64,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             startActivity(new Intent(SignInActivity.this, MainActivity.class));
             finish();
         }
-
         initFacebook();
         initGoogle();
-
     }
 
     @Override

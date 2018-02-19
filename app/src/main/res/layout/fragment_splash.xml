@@ -1,14 +1,21 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     tools:context="com.efpro.bengkelmotor_01.Fragment.SplashFragment">
 
     <ImageView
         android:id="@+id/imgSplash"
-        android:layout_width="209dp"
-        android:layout_height="285dp"
-        android:layout_gravity="center"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:src="@drawable/ic_cari_bengkel" />
 
-</FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="CaBel"/>
+
+</LinearLayout>

@@ -6,7 +6,6 @@
     android:id="@+id/mapFragLayout"
     tools:context="com.efpro.bengkelmotor_01.Fragment.MapFragment">
 
-    <!--&lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
 
     <com.google.android.gms.maps.MapView
         android:layout_height="match_parent"
@@ -120,7 +119,7 @@
                 android:id="@+id/imgBengkel"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/ic_cari_bengkel"
                 android:layout_margin="4dp"/>
 
             <TextView

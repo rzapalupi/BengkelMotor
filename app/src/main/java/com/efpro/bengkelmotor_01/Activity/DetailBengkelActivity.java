@@ -139,7 +139,6 @@ public class DetailBengkelActivity extends AppCompatActivity implements View.OnC
         fab_navigation.setOnClickListener(this);
 
         getCurrentUserID();
-
         //set database review from firebase
         mReviewBengkelRef = FirebaseDatabase.getInstance().getReference("ReviewBengkel");
         mBengkelRef = FirebaseDatabase.getInstance().getReference("ListBengkel");

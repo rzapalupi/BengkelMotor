@@ -21,7 +21,8 @@ public class ViewPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
     private List<Foto> mfotoDetailBengkels;
-    private Integer [] images = {R.drawable.slide1,R.drawable.slide2,R.drawable.slide3};
+    private Integer [] images = {R.drawable.slide1,R.drawable.slide2,R.drawable.slide3,
+            R.drawable.slide4,R.drawable.slide5,R.drawable.slide6};
     int flag;
 
 

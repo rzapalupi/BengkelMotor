@@ -6,26 +6,21 @@ package com.efpro.bengkelmotor_01.Helper;
 
 public class Haversine {
 
-    public double Formula(double myLat, double myLong, double bLat, double bLong ){
+    public double Formula(double myLat, double myLng, double bLat, double bLng ){
         double R        = 6371; //Radius bumi
         double dLat     = toRadian (bLat - myLat);
-        double dLong   = toRadian (bLong - myLong);
-        myLat = toRadian(myLat);
-        bLat  = toRadian(bLat);
+        double dLng     = toRadian (bLng - myLng);
+        myLat           = toRadian(myLat);
+        bLat            = toRadian(bLat);
 
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLong / 2) * Math.sin(dLong / 2) * Math.cos(myLat) * Math.cos(bLat);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        return R * c;
-
-//        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLong / 2) * Math.sin(dLong / 2) * Math.cos(myLat) * Math.cos(bLat);
-//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-//        return R * c;
-
+        double a    = Math.sin(dLat / 2) * Math.sin(dLat / 2);
+        double c    = Math.sin(dLng / 2) * Math.sin(dLng / 2) * Math.cos(myLat) * Math.cos(bLat);
+        return R * 2 * Math.asin(Math.sqrt(a + c));
     }
 
-    public double toRadian(double angle) {
+    private double toRadian(double angle) {
         return Math.PI * angle / 180.0;
     }
-
-
 }
+
+

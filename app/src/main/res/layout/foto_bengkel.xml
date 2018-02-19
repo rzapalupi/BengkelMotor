@@ -5,15 +5,17 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/imgFotoBengkel"
         android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorAccent"
         android:contentDescription="@string/app_name"
         android:fitsSystemWindows="true"
-        android:id="@+id/imgFotoBengkel"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:background="@color/colorPrimary"
         android:scaleType="fitXY"
         app:layout_collapseMode="parallax"
-        android:layout_height="300dp" />
+        app:srcCompat="@drawable/ic_cari_bengkel" />
 
     <View
         android:layout_width="match_parent"

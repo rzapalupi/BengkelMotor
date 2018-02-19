@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements
         try {
             if (!isGPSEnabled && !isNetworkEnabled) {
                 //network disable
+                Toast.makeText(this, "Aktifkan GPS atau Network Anda", Toast.LENGTH_SHORT).show();
             } else {
                 this.canGetLocation = true;
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -170,27 +171,28 @@ public class MainActivity extends AppCompatActivity implements
                     return;
                 }
                 if (isNetworkEnabled) {
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
-                    Log.d("activity", "LOC Network Enabled");
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                            1000, 10, this);
+                    Log.d("activity", "LOC: Network Enabled");
                     if (locationManager != null) {
                         location = locationManager
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                         if (location != null) {
-                            Log.d("activity", "LOC by Network");
+                            Log.d("activity", "LOC: by Network");
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
                         }
                     }
                 }
-                // if GPS Enabled get lat/long using GPS Services
                 else if (isGPSEnabled) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
-                    Log.d("activity", "RLOC: GPS Enabled");
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                            1000, 10, this);
+                    Log.d("activity", "LOC: GPS Enabled");
                     if (locationManager != null) {
                         location = locationManager
                                 .getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         if (location != null) {
-                            Log.d("activity", "RLOC: loc by GPS");
+                            Log.d("activity", "RLOC: LOC by GPS");
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
                         }
@@ -300,19 +302,22 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 bengkels.clear();
-
-                /**--- with radius, for show bengkel location which in radius---**/
                 for (DataSnapshot bengkelSnapshot: dataSnapshot.getChildren()) {
                     Bengkel bengkel = bengkelSnapshot.getValue(Bengkel.class);
                     bengkelID = bengkelSnapshot.getKey();
-                    if(bengkel.getbLongitude() > (longitude-radius) && bengkel.getbLongitude() < (longitude+radius) &&
-                            bengkel.getbLatitude() > (latitude-radius) && bengkel.getbLatitude() < (latitude+radius) ) {
-                        double haversine = new Haversine().Formula(latitude,longitude,bengkel.getbLatitude(),bengkel.getbLongitude());
+                    if(bengkel.getbLongitude() > (longitude-radius) &&
+                            bengkel.getbLongitude() < (longitude+radius) &&
+                            bengkel.getbLatitude() > (latitude-radius) &&
+                            bengkel.getbLatitude() < (latitude+radius) ) {
+                        double haversine = new Haversine().
+                                Formula(latitude,longitude,bengkel.getbLatitude(),
+                                        bengkel.getbLongitude());
                         bengkel.setbJarak(haversine);
                         bengkels.add(bengkel);
                         getDataFotoBengkel(bengkelID);
                     }
                 }
+
 
                 //Sorting jarak terdekat
                 Collections.sort(bengkels, new Comparator<Bengkel>() {
@@ -322,15 +327,14 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
 
-            }
 
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "loadNote:onCancelled", databaseError.toException());
             }
         };
         mBengkelRef.addValueEventListener(valueEventListener);
-
     }
 
     public void getCache(){

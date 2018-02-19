@@ -128,7 +128,6 @@ public class MapFragment extends Fragment
         } catch (Exception e){
             e.printStackTrace();
         }
-
         BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.ic_marker_blue);
         Bitmap b=bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, 128, 128, false);
@@ -139,21 +138,12 @@ public class MapFragment extends Fragment
                     .position(bLocation)
                     .title(bengkel.getbNama())
                     .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
-            Log.e("Nama", bengkel.getbNama());
         }
 
         //Add marker for your location and move camera
         LatLng myLocation = new LatLng(((MainActivity) getActivity()).getLatitude(), (((MainActivity) getActivity()).getLongitude()));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
-
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         mGoogleMap.setMyLocationEnabled(true);

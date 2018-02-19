@@ -23,12 +23,17 @@
             android:layout_gravity="center"
             android:layout_margin="24dp"
             android:textAlignment="center"
-            android:text="Cari Bengkel merupakan aplikasi yang berfungsi untuk mencari posisi bengkel yang terdekat dengan pengguna"/>
+            android:text="Cari Bengkel merupakan aplikasi yang berfungsi untuk mencari lokasi bengkel terdekat dengan pengguna"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Version 1.0"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Copyright \u00A9 2017 efPro"/>
 
 
     </LinearLayout>

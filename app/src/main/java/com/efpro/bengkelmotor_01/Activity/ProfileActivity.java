@@ -74,7 +74,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Initilization
         txtNamaUser     = (TextView) findViewById(R.id.txtNamaUser);
         imgProfileUser  = (ImageView) findViewById(R.id.imgProfileUser);
         viewPager       = (ViewPager) findViewById(R.id.viewpager);
@@ -85,11 +84,8 @@ public class ProfileActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         mMyBengkelRef.keepSynced(true);
         mReviewBengkelRef.keepSynced(true);
-
         getCurrentUser();
-
         tabLayout.setupWithViewPager(viewPager);
-
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -97,8 +93,9 @@ public class ProfileActivity extends AppCompatActivity {
                 setupViewPager(viewPager);
             }
         },1000);
-
     }
+
+
 
 
 

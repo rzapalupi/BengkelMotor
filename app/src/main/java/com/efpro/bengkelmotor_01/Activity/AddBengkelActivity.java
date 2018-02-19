@@ -157,7 +157,6 @@ public class AddBengkelActivity extends AppCompatActivity implements View.OnClic
         mStorageRef = FirebaseStorage.getInstance().getReference("FotoBengkel");
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-
         //Edit Bengkel
         Bengkel editBengkel = getIntent().getParcelableExtra("EDIT");
         if (editBengkel != null){
